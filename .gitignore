@@ -130,11 +130,6 @@ dmypy.json
 .idea
 *.iml
 
-devel-config.yml
-empty-sandbox.git.zip
-kypo/openstack_driver
-kypo/topology_definition
-
 create-db.sh
 
 
