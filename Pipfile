@@ -6,6 +6,9 @@ name = "pypi"
 [packages]
 django = "*"
 drf-yasg2 = "*"
+taxii2-client = "*"
+Jinja2= "*"
+stix2 = "*"
 
 [dev-packages]
 
