@@ -61,7 +61,7 @@ def get_mitre_techniques() -> (list, list):
 
 def test_get_mitre():
     tactics, techniques = get_mitre_techniques()
-    #print("\n\n\n\n\n\n\n\n")
-    #print(tactics)
-    #print("\n\n\n\n\n\n\n\n")
-    #print(techniques)
+    # print("\n\n\n\n\n\n\n\n>")
+    # print(tactics)
+    # print("\n\n\n\n\n\n\n\n>")
+    # print(techniques)
