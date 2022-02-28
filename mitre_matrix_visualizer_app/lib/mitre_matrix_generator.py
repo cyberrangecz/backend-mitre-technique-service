@@ -90,14 +90,23 @@ class MitreMatrixGenerator:
 
     @staticmethod
     def generate_matrix():
-        tactics, techniques = MitreClient.get_tactics_techniques()
+        # tactics, techniques = MitreClient.get_tactics_techniques() # this is done for now #TODO uncomment
         print("Generating output file...")
         with open("mitre_matrix_visualizer_app/templates/template.jinja2", "r") as file:
             template = Template(file.read())
 
         game_paths = ["mitre_matrix_visualizer_app/templates/Captain_Slovakistan_with_techniques.json", "mitre_matrix_visualizer_app/templates/Kobylka_with_techniques.json", "mitre_matrix_visualizer_app/templates/COVID-19_Truth_seeker_with_techniques.json"]
         titles, levels = MitreMatrixGenerator.load_games(game_paths)
-        #titles are list of level names   levels are all info of levels
+
+        # TODO this is my json file, will be replaced by the json file coming from the endpoint - dunno what form it will have
+        with open("mitre_matrix_visualizer_app/templates/test.json", "r") as file:
+            data = json.load(file)
+        #my_titles = [level['title'] for level in data]  #TODO this does not work
+        #print(titles)
+        #print(my_titles)
+
+        #titles are list of level names   levels are all info of levels - that is a problem
+        # - I need to convert the json I made to the defaultdict structure is possible
 
         with open("mitre_matrix_visualizer_app/templates/result.html", "w") as file:
             technique_dict = MitreMatrixGenerator.compare_techniques(levels)
@@ -114,8 +123,9 @@ class MitreMatrixGenerator:
             # print("\n\n\n")
             # print(technique_dict['TA0001'])
             # print(technique_dict[1])
-            file.write(template.render(tactics=tactics, techniques=techniques, game_names=titles,
-                                       technique_dict=technique_dict, single_color=False))
+
+            # file.write(template.render(tactics=tactics, techniques=techniques, game_names=titles,  #TODO uncomment
+            #                            technique_dict=technique_dict, single_color=False))
 
     @staticmethod
     def test_generate():
