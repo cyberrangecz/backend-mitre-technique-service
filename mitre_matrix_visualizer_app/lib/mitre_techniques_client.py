@@ -9,30 +9,32 @@ MITRE_CACHE_TIMEOUT = 86400
 
 
 class MitreClient:
-    @staticmethod
-    def get_matrix_tactics(source: TAXIICollectionSource) -> list:
+    def __init__(self):
+        collection = Collection(SOURCE_WEBSITE + MATRIX_ID)
+        self.source = TAXIICollectionSource(collection)
+
+    def __get_matrix_tactics(self) -> list:
         """
         Gather tactics of MATRIX_NAME matrix.
         Based on code from MITRE ATTACK® official repository https://github.com/mitre/cti.
         """
-        tactics = list()
-        matrices = source.query([Filter('type', '=', 'x-mitre-matrix'), ])
+        tactics = []
+        matrices = self.source.query([Filter('type', '=', 'x-mitre-matrix'), ])
 
         for matrix in matrices:
             if matrix["name"] == MATRIX_NAME:
                 for tactic_id in matrix['tactic_refs']:
-                    tactics.append(source.get(tactic_id))
+                    tactics.append(self.source.get(tactic_id))
                 break
 
         return tactics
 
-    @staticmethod
-    def get_tactic_techniques(source, tactic):
+    def __get_tactic_techniques(self, tactic):
         """
         Gather techniques assigned to  a single tactic.
         Based on code from MITRE ATTACK® official repository https://github.com/mitre/cti.
         """
-        return source.query([
+        return self.source.query([
             Filter('type', '=', 'attack-pattern'),
             Filter('kill_chain_phases.phase_name', '=', tactic),
             Filter('kill_chain_phases.kill_chain_name', '=', 'mitre-attack'),
@@ -40,7 +42,7 @@ class MitreClient:
         ])
 
     @staticmethod
-    def remove_revoked_deprecated(stix_objects):
+    def __remove_revoked_deprecated(stix_objects):
         """
         Remove revoked or deprecated STIX objects from list of STIX objects.
         Based on code from MITRE ATTACK® official repository https://github.com/mitre/cti.
@@ -53,33 +55,29 @@ class MitreClient:
             )
         )
 
-    @staticmethod
-    def get_matrix_techniques(source: TAXIICollectionSource, tactics) -> list:
+    def __get_matrix_techniques(self, tactics) -> list:
         """
         Gather techniques of matrix.
         Based on code from MITRE ATTACK® official repository https://github.com/mitre/cti.
         """
         techniques = []
         for tactic in tactics:
-            lst = MitreClient.get_tactic_techniques(source, tactic["x_mitre_shortname"])
-            lst = MitreClient.remove_revoked_deprecated(lst)
-            lst.sort(key=lambda x: x["name"])
-            techniques.append(lst)
+            technique = self.__get_tactic_techniques(tactic["x_mitre_shortname"])
+            technique = MitreClient.__remove_revoked_deprecated(technique)
+            technique.sort(key=lambda x: x["name"])
+            techniques.append(technique)
         return techniques
 
-    @staticmethod
-    def get_tactics_techniques() -> (list, list):
+    def get_tactics_techniques(self) -> (list, list):
         print("Gathering matrix content:")
-        collection = Collection(SOURCE_WEBSITE + MATRIX_ID)
-        src = TAXIICollectionSource(collection)
         tactics = cache.get("mitre_tactics", None)
         if not tactics:
-            tactics = MitreClient.get_matrix_tactics(src)
+            tactics = self.__get_matrix_tactics()
             cache.set("mitre_tactics", tactics, MITRE_CACHE_TIMEOUT)
 
         techniques = cache.get("mitre_techniques", None)
         if not techniques:
-            techniques = MitreClient.get_matrix_techniques(src, tactics)
+            techniques = self.__get_matrix_techniques(tactics)
             cache.set("mitre_techniques", techniques, MITRE_CACHE_TIMEOUT)
 
         return tactics, techniques
