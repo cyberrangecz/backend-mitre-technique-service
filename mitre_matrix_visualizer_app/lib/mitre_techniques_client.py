@@ -26,7 +26,6 @@ class MitreClient:
                 for tactic_id in matrix['tactic_refs']:
                     tactics.append(self.source.get(tactic_id))
                 break
-
         return tactics
 
     def __get_tactic_techniques(self, tactic):
@@ -41,8 +40,7 @@ class MitreClient:
             Filter('x_mitre_is_subtechnique', '=', False),
         ])
 
-    @staticmethod
-    def __remove_revoked_deprecated(stix_objects):
+    def __remove_revoked_deprecated(self, stix_objects):
         """
         Remove revoked or deprecated STIX objects from list of STIX objects.
         Based on code from MITRE ATTACK® official repository https://github.com/mitre/cti.
@@ -63,7 +61,7 @@ class MitreClient:
         techniques = []
         for tactic in tactics:
             technique = self.__get_tactic_techniques(tactic["x_mitre_shortname"])
-            technique = MitreClient.__remove_revoked_deprecated(technique)
+            technique = self.__remove_revoked_deprecated(technique)
             technique.sort(key=lambda x: x["name"])
             techniques.append(technique)
         return techniques
