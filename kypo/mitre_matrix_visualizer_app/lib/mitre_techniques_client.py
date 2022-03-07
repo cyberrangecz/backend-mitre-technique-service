@@ -13,7 +13,7 @@ class MitreClient:
         collection = Collection(SOURCE_WEBSITE + MATRIX_ID)
         self.source = TAXIICollectionSource(collection)
 
-    def __get_matrix_tactics(self) -> list:
+    def _get_matrix_tactics(self) -> list:
         """
         Gather tactics of MATRIX_NAME matrix.
         Based on code from MITRE ATTACK® official repository https://github.com/mitre/cti.
@@ -28,7 +28,7 @@ class MitreClient:
                 break
         return tactics
 
-    def __get_tactic_techniques(self, tactic):
+    def _get_tactic_techniques(self, tactic):
         """
         Gather techniques assigned to  a single tactic.
         Based on code from MITRE ATTACK® official repository https://github.com/mitre/cti.
@@ -40,7 +40,7 @@ class MitreClient:
             Filter('x_mitre_is_subtechnique', '=', False),
         ])
 
-    def __remove_revoked_deprecated(self, stix_objects):
+    def _remove_revoked_deprecated(self, stix_objects):
         """
         Remove revoked or deprecated STIX objects from list of STIX objects.
         Based on code from MITRE ATTACK® official repository https://github.com/mitre/cti.
@@ -53,15 +53,15 @@ class MitreClient:
             )
         )
 
-    def __get_matrix_techniques(self, tactics) -> list:
+    def _get_matrix_techniques(self, tactics) -> list:
         """
         Gather techniques of matrix.
         Based on code from MITRE ATTACK® official repository https://github.com/mitre/cti.
         """
         techniques = []
         for tactic in tactics:
-            technique = self.__get_tactic_techniques(tactic["x_mitre_shortname"])
-            technique = self.__remove_revoked_deprecated(technique)
+            technique = self._get_tactic_techniques(tactic["x_mitre_shortname"])
+            technique = self._remove_revoked_deprecated(technique)
             technique.sort(key=lambda x: x["name"])
             techniques.append(technique)
         return techniques
@@ -70,12 +70,12 @@ class MitreClient:
         print("Gathering matrix content:")
         tactics = cache.get("mitre_tactics", None)
         if not tactics:
-            tactics = self.__get_matrix_tactics()
+            tactics = self._get_matrix_tactics()
             cache.set("mitre_tactics", tactics, MITRE_CACHE_TIMEOUT)
 
         techniques = cache.get("mitre_techniques", None)
         if not techniques:
-            techniques = self.__get_matrix_techniques(tactics)
+            techniques = self._get_matrix_techniques(tactics)
             cache.set("mitre_techniques", techniques, MITRE_CACHE_TIMEOUT)
 
         return tactics, techniques

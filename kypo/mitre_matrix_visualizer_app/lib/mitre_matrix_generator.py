@@ -6,7 +6,7 @@ from collections import defaultdict
 
 class MitreMatrixGenerator:
     @staticmethod
-    def __generate_comparison_techniques(training_techniques):
+    def _generate_comparison_techniques(training_techniques):
         """
             Comparison dictionary of games. First layer key is tactic identifier, second layer key
             is technique identifier. Final value is set of indices of games containing attack
@@ -39,7 +39,7 @@ class MitreMatrixGenerator:
 
         training_techniques = [training_definition.get("MITRE_techniques") for training_definition
                                in data if not played or training_definition.get("played")]
-        training_technique_dict = self.__generate_comparison_techniques(training_techniques)
+        training_technique_dict = self._generate_comparison_techniques(training_techniques)
 
         # TODO this is generating the matrix into file for testing purposes
         with open("kypo/mitre_matrix_visualizer_app/templates/result.html", "w") as file:

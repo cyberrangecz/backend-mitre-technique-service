@@ -1,8 +1,8 @@
 from kypo.mitre_matrix_visualizer_app.lib.mitre_techniques_client import MitreClient
 import pytest
 
-class TestClient:
 
+class TestClient:
     @pytest.fixture
     def mitre_client(self):
         return MitreClient()
@@ -16,7 +16,7 @@ class TestClient:
         mitre_client.source.get = mocker.MagicMock()
         mitre_client.source.get.return_value = 9
 
-        tactics = mitre_client._MitreClient__get_matrix_tactics()
+        tactics = mitre_client._get_matrix_tactics()
 
         assert tactics == [9, 9, 9, 9]
         mitre_client.source.get.assert_any_call(4)
@@ -26,7 +26,7 @@ class TestClient:
 
     def test_remove_revoked_deprecated(self, mitre_client):
         mitre_client = MitreClient()
-        filtered = mitre_client._MitreClient__remove_revoked_deprecated([
+        filtered = mitre_client._remove_revoked_deprecated([
             {"name": "a", "x_mitre_deprecated": True},
             {"name": "b", "revoked": True},
             {"name": "c", "x_mitre_deprecated": False},
@@ -39,23 +39,23 @@ class TestClient:
     def test_get_matrix_techniques(self, mocker, mitre_client):
         tactics = [{"x_mitre_shortname": "a"},
                    {"x_mitre_shortname": "b"}]
-        mitre_client._MitreClient__get_tactic_techniques = mocker.MagicMock()
-        mitre_client._MitreClient__get_tactic_techniques.return_value = "c"
-        mitre_client._MitreClient__remove_revoked_deprecated = mocker.MagicMock()
-        mitre_client._MitreClient__remove_revoked_deprecated.return_value = [{"name": "b"},
+        mitre_client._get_tactic_techniques = mocker.MagicMock()
+        mitre_client._get_tactic_techniques.return_value = "c"
+        mitre_client._remove_revoked_deprecated = mocker.MagicMock()
+        mitre_client._remove_revoked_deprecated.return_value = [{"name": "b"},
                                                                              {"name": "a"}]
 
-        techniques = mitre_client._MitreClient__get_matrix_techniques(tactics)
+        techniques = mitre_client._get_matrix_techniques(tactics)
 
-        mitre_client._MitreClient__get_tactic_techniques.assert_any_call("a")
-        mitre_client._MitreClient__get_tactic_techniques.assert_called_with("b")
-        mitre_client._MitreClient__remove_revoked_deprecated.assert_called_with("c")
+        mitre_client._get_tactic_techniques.assert_any_call("a")
+        mitre_client._get_tactic_techniques.assert_called_with("b")
+        mitre_client._remove_revoked_deprecated.assert_called_with("c")
         assert techniques == [[{"name": "a"}, {"name": "b"}], [{"name": "a"}, {"name": "b"}]]
 
     def test_get_tactics_techniques(self, mocker, mitre_client):
-        mitre_client._MitreClient__get_matrix_tactics = mocker.MagicMock()
-        mitre_client._MitreClient__get_matrix_tactics.return_value = "a"
-        mitre_client._MitreClient__get_matrix_techniques = mocker.MagicMock()
-        mitre_client._MitreClient__get_matrix_techniques.return_value = "b"
+        mitre_client._get_matrix_tactics = mocker.MagicMock()
+        mitre_client._get_matrix_tactics.return_value = "a"
+        mitre_client._get_matrix_techniques = mocker.MagicMock()
+        mitre_client._get_matrix_techniques.return_value = "b"
 
         assert mitre_client.get_tactics_techniques() == ("a", "b")
