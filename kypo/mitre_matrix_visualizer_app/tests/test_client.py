@@ -1,4 +1,4 @@
-from mitre_matrix_visualizer_app.lib.mitre_techniques_client import MitreClient
+from kypo.mitre_matrix_visualizer_app.lib.mitre_techniques_client import MitreClient
 import pytest
 
 class TestClient:

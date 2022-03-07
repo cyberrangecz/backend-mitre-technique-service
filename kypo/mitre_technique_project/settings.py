@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'mitre_technique_project.urls'
+ROOT_URLCONF = 'kypo.mitre_technique_project.urls'
 
 TEMPLATES = [
     {
@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'mitre_technique_project.wsgi.application'
+WSGI_APPLICATION = 'kypo.mitre_technique_project.wsgi.application'
 
 
 # Database

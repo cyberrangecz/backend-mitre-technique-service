@@ -24,7 +24,7 @@ urlpatterns = [
     path('doc', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'^doc(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0),
             name='schema-json'),
-    path('', include('mitre_matrix_visualizer_app.urls')),
+    path('', include('kypo.mitre_matrix_visualizer_app.urls')),
 ]
 
 urlpatterns = [
