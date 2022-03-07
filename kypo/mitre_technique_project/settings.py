@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from kypo.mitre_matrix_visualizer_app.KypoServiceConfig import KypoServiceConfig
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -18,6 +19,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
+
+KYPO_MITRE_TECHNIQUE_SERVICE_CONFIG_PATH = os.path.join(BASE_DIR, 'config.yml')
+KYPO_SERVICE_CONFIG = KypoServiceConfig.from_file(KYPO_MITRE_TECHNIQUE_SERVICE_CONFIG_PATH)
+KYPO_CONFIG = KYPO_SERVICE_CONFIG.app_config
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '&#syipmic=iv3t)gx!a@0vjmx2lx(8l_(1(q#f*o_z%zdl69xv'
