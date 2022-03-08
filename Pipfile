@@ -9,6 +9,7 @@ drf-yasg2 = "*"
 taxii2-client = "*"
 Jinja2= "*"
 stix2 = "*"
+yamlize = ">=0.6"
 
 [dev-packages]
 # tox
