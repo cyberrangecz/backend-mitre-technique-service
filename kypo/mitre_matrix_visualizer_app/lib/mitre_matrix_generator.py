@@ -46,5 +46,8 @@ class MitreMatrixGenerator:
             file.write(template.render(tactics=tactics, techniques=techniques, game_names=titles,
                                        technique_dict=training_technique_dict, single_color=False))
 
-        return template.render(tactics=tactics, techniques=techniques, game_names=titles,
+        with open("kypo/mitre_matrix_visualizer_app/templates/template2.jinja2", "r") as file2:
+            template2 = Template(file2.read())
+
+        return template2.render(tactics=tactics, techniques=techniques, game_names=titles,
                                technique_dict=training_technique_dict, single_color=False)
