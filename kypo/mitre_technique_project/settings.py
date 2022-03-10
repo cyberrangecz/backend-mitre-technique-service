@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'drf_yasg2',
+    'rest_framework',
+
+    'kypo.mitre_matrix_visualizer_app.apps.MitreMatrixVisualizerAppConfig',
 ]
 
 MIDDLEWARE = [
