@@ -3,7 +3,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
+#[[source]]
+#url = "https://localhost.lan/repository"
+#name = "kypo"
+#verify_ssl = true
+
 [packages]
+#csirtmu-oidc-client = { index = "kypo", version = ">=0.2.1" }
+#csirtmu-uag-auth = { index = "kypo", version = "==0.1.10" }
 django = "*"
 djangorestframework = "*"
 taxii2-client = "*"

@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-from kypo.mitre_matrix_visualizer_app.KypoServiceConfig import KypoServiceConfig
+from kypo.mitre_common_lib.kypo_service_config import KypoServiceConfig
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -22,17 +22,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 KYPO_MITRE_TECHNIQUE_SERVICE_CONFIG_PATH = os.path.join(BASE_DIR, 'config.yml')
 KYPO_SERVICE_CONFIG = KypoServiceConfig.from_file(KYPO_MITRE_TECHNIQUE_SERVICE_CONFIG_PATH)
+KYPO_CONFIG = KYPO_SERVICE_CONFIG.app_config
+os.environ['REQUESTS_CA_BUNDLE'] = KYPO_CONFIG.ssl_ca_certificate_verify
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '&#syipmic=iv3t)gx!a@0vjmx2lx(8l_(1(q#f*o_z%zdl69xv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = KYPO_SERVICE_CONFIG.debug
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = tuple(KYPO_SERVICE_CONFIG.allowed_hosts)
 
 
 # Application definition
+
+CORS_ORIGIN_ALLOW_ALL = KYPO_SERVICE_CONFIG.cors_origin_allow_all
+CORS_ORIGIN_WHITELIST = tuple(KYPO_SERVICE_CONFIG.cors_origin_whitelist)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -83,9 +88,13 @@ WSGI_APPLICATION = 'kypo.mitre_technique_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': KYPO_CONFIG.database.engine,
+        'HOST': KYPO_CONFIG.database.host,
+        'NAME': KYPO_CONFIG.database.name,
+        'PASSWORD': KYPO_CONFIG.database.password,
+        'PORT': KYPO_CONFIG.database.port,
+        'USER': KYPO_CONFIG.database.user
+    },
 }
 
 
@@ -113,7 +122,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Prague'
 
 USE_I18N = True
 
@@ -125,4 +134,67 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = f'/{KYPO_SERVICE_CONFIG.microservice_name}/static/'
+
+REST_FRAMEWORK = { }
+
+
+if KYPO_SERVICE_CONFIG.authentication.authenticated_rest_api:
+    REST_FRAMEWORK.update({
+        'DEFAULT_AUTHENTICATION_CLASSES': (
+            # For testing purposes, uncomment BasicAuthentication.
+            # It allows login using name & password (nice for permission testing).
+            # 'rest_framework.authentication.BasicAuthentication',
+            'csirtmu.oidc_client.authentication.JWTAccessTokenAuthentication',
+        ),
+    })
+
+    OIDC_AUTH = {
+        # (Optional) Function that resolves id_token into user.
+        # This function receives a request and an id_token dict and expects to
+        # return a User object. The default implementation tries to find the user
+        # based on username (natural key) taken from the 'sub'-claim of the
+        # id_token.
+        'OIDC_RESOLVE_USER_FUNCTION': 'csirtmu.uag_auth.auth.get_or_create_user',
+    }
+
+    CSIRTMU_OIDC_CLIENT = {
+        # Need to be set when using JWTAccessTokenAuthentication,
+        # which supports multiple OIDC providers (parsing them from the token).
+        # Only those listed here will be allowed.
+        'ALLOWED_OIDC_PROVIDERS': tuple(KYPO_SERVICE_CONFIG.authentication.allowed_oidc_providers)
+    }
+
+    CSIRTMU_UAG_AUTH = {
+        # User and Group roles registration endpoint URL
+        'ROLES_REGISTRATION_URL': KYPO_SERVICE_CONFIG.authentication.roles_registration_url,
+        # User and Group roles acquisition endpoint URL
+        'ROLES_ACQUISITION_URL': KYPO_SERVICE_CONFIG.authentication.roles_acquisition_url,
+        # Path to roles definition file
+        'ROLES_DEFINITION_PATH': os.path.join(BASE_DIR,
+                                              'kypo/sandbox_service_project/permissions/roles.yml'),
+
+        # User and Group information configuration
+        'MICROSERVICE_NAME': KYPO_SERVICE_CONFIG.microservice_name,
+        'ROLE_PREFIX': "ROLE",
+        'ENDPOINT': __package__,
+    }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'call_cache',
+        'TIMEOUT': None,  # Expire never
+        'OPTIONS': {
+            'MAX_ENTRIES': 300  # Django default value is 300 (2 kB per item = 0.6 MB)
+        }
+    },
+    'uag_auth_groups_cache': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'uag_auth_groups_cache',
+        'OPTIONS': {
+            'MAX_ENTRIES': 500
+        }
+    },
+}
