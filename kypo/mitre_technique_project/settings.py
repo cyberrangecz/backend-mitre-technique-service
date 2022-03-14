@@ -86,16 +86,7 @@ WSGI_APPLICATION = 'kypo.mitre_technique_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': KYPO_CONFIG.database.engine,
-        'HOST': KYPO_CONFIG.database.host,
-        'NAME': KYPO_CONFIG.database.name,
-        'PASSWORD': KYPO_CONFIG.database.password,
-        'PORT': KYPO_CONFIG.database.port,
-        'USER': KYPO_CONFIG.database.user
-    },
-}
+DATABASES = {}
 
 
 # Password validation
@@ -137,64 +128,8 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = f'/{KYPO_SERVICE_CONFIG.microservice_name}/static/'
 
-REST_FRAMEWORK = { }
-
-
-if KYPO_SERVICE_CONFIG.authentication.authenticated_rest_api:
-    REST_FRAMEWORK.update({
-        'DEFAULT_AUTHENTICATION_CLASSES': (
-            # For testing purposes, uncomment BasicAuthentication.
-            # It allows login using name & password (nice for permission testing).
-            # 'rest_framework.authentication.BasicAuthentication',
-            'csirtmu.oidc_client.authentication.JWTAccessTokenAuthentication',
-        ),
-    })
-
-    OIDC_AUTH = {
-        # (Optional) Function that resolves id_token into user.
-        # This function receives a request and an id_token dict and expects to
-        # return a User object. The default implementation tries to find the user
-        # based on username (natural key) taken from the 'sub'-claim of the
-        # id_token.
-        'OIDC_RESOLVE_USER_FUNCTION': 'csirtmu.uag_auth.auth.get_or_create_user',
-    }
-
-    CSIRTMU_OIDC_CLIENT = {
-        # Need to be set when using JWTAccessTokenAuthentication,
-        # which supports multiple OIDC providers (parsing them from the token).
-        # Only those listed here will be allowed.
-        'ALLOWED_OIDC_PROVIDERS': tuple(KYPO_SERVICE_CONFIG.authentication.allowed_oidc_providers)
-    }
-
-    CSIRTMU_UAG_AUTH = {
-        # User and Group roles registration endpoint URL
-        'ROLES_REGISTRATION_URL': KYPO_SERVICE_CONFIG.authentication.roles_registration_url,
-        # User and Group roles acquisition endpoint URL
-        'ROLES_ACQUISITION_URL': KYPO_SERVICE_CONFIG.authentication.roles_acquisition_url,
-        # Path to roles definition file
-        'ROLES_DEFINITION_PATH': os.path.join(BASE_DIR,
-                                              'kypo/sandbox_service_project/permissions/roles.yml'),
-
-        # User and Group information configuration
-        'MICROSERVICE_NAME': KYPO_SERVICE_CONFIG.microservice_name,
-        'ROLE_PREFIX': "ROLE",
-        'ENDPOINT': __package__,
-    }
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'call_cache',
-        'TIMEOUT': None,  # Expire never
-        'OPTIONS': {
-            'MAX_ENTRIES': 300  # Django default value is 300 (2 kB per item = 0.6 MB)
-        }
-    },
-    'uag_auth_groups_cache': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'uag_auth_groups_cache',
-        'OPTIONS': {
-            'MAX_ENTRIES': 500
-        }
-    },
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_PERMISSIONS_CLASSES': [],
+    'UNAUTHENTICATED_USER': None,
 }

@@ -1,3 +1,6 @@
+# Name of the microservice.
+#microservice_name: kypo-sandbox-service
+
 # A boolean that turns on/off debug mode.
 # SECURITY WARNING: don't run with debug turned on in production!
 debug: True
@@ -11,43 +14,7 @@ debug: True
 # A list of origins that are authorized to make cross-site HTTP requests.
 #cors_origin_whitelist: []
 
-authentication:
-    # Whether the REST API authentication is on.
-    # If set to False, other authentication variables are not used.
-    authenticated_rest_api: False
-
-    # List of dictionaries representing OIDC providers that are allowed.
-    # Mandatory attributes: 'issuer'. Optional attributes: 'userinfo_endpoint', 'well_known_config'.
-    # Example of such dictionary:
-    # {issuer: http://example.com, userinfo_endpoint: http://example.com/userinfo}
-    allowed_oidc_providers: []
-
-    # User and Group roles registration endpoint URL.
-    roles_registration_url: ""
-
-    # User and Group roles acquisition endpoint URL.
-    roles_acquisition_url: ""
-
 application_configuration:
     # A path to directory of CA certificates or file of CA certificates, i.e. CA bundle.
     # Use in case of self-signed certificates in related services.
-    #ssl_ca_certificate_verify: ""
-
-    database:
-        # The database backend to use.
-        engine: "django.db.backends.sqlite3"
-
-        # Which host to use when connecting to the database.
-        host: ""
-
-        # The name of the database to use.
-        name: 'db.sqlite3'
-
-        # The password to use when connecting to the database.
-        password: ""
-
-        # The port to use when connecting to the database.
-        port: ""
-
-        # The username to use when connecting to the database.
-        user: ""
+    ssl_ca_certificate_verify: ""

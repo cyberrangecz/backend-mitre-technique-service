@@ -52,7 +52,6 @@ class TestClient:
         mitre_client._remove_revoked_deprecated.assert_called_with("c")
         assert techniques == [[{"name": "a"}, {"name": "b"}], [{"name": "a"}, {"name": "b"}]]
 
-    @pytest.mark.django_db
     def test_get_tactics_techniques(self, mocker, mitre_client):
         mitre_client._get_matrix_tactics = mocker.MagicMock()
         mitre_client._get_matrix_tactics.return_value = "a"
