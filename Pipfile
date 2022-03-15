@@ -11,6 +11,7 @@ Jinja2= "*"
 stix2 = "*"
 yamlize = ">=0.6"
 drf-yasg2 = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 # tox
@@ -23,6 +24,3 @@ pytest-django = "*"
 
 [requires]
 python_version = "3.8"
-
-# Project dependencies
-django-cors-headers = "*"
