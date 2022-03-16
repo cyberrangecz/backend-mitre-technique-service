@@ -1,0 +1,293 @@
+[
+  {
+    "title" : "Captain Slovakistan",
+    "id" : 1,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1594",
+      "TA0001.T1190",
+      "TA0003.T1505.003",
+      "TA0009.T1005",
+      "TA0006.T1552.001",
+      "TA0001.T1078.003"
+    ]
+  },
+  {
+    "title" : "Uploaded Kobylka 3302",
+    "id" : 2,
+    "played" : false,
+    "mitre_techniques" : [
+      "TA0043.T1595",
+      "TA0043.T1592.002",
+      "TA0042.T1588.006",
+      "TA0001.T1190",
+      "TA0002.T1059.004"]
+  },
+  {
+    "title": "[Delta] COVID-19 Truth seeker",
+    "id" : 3,
+    "played" : true,
+    "mitre_techniques": [  ]
+  },
+  {
+    "title": "[Delta] COVID-19 Truth seeker",
+    "id" : 4,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa2",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa3",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa4",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa5",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  },
+  {
+    "title": "HENLO AAAAAAAa6",
+    "id" : 69,
+    "played" : true,
+    "mitre_techniques": [
+      "TA0043.T1595",
+      "TA0043.T1592.002"
+    ]
+  }
+]
