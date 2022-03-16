@@ -7,9 +7,9 @@ from collections import defaultdict
 
 class TestClient:
     training_definition_data = [
-        {"title": "a1", "id": "1", "played": False, "MITRE_techniques": [1, 2]},
-        {"title": "b2", "id": "2", "played": True, "MITRE_techniques": []},
-        {"title": "b3", "id": "3", "played": True, "MITRE_techniques": [3]}
+        {"title": "a1", "id": "1", "played": False, "mitre_techniques": [1, 2]},
+        {"title": "b2", "id": "2", "played": True, "mitre_techniques": []},
+        {"title": "b3", "id": "3", "played": True, "mitre_techniques": [3]}
     ]
 
     @pytest.fixture
@@ -44,16 +44,18 @@ class TestClient:
         mock_template, mock_generate_comparison_techniques = setup_generate_matrix_all
 
         assert mitre_generator.generate_matrix(False) == 'r'
-        mock_generate_comparison_techniques.assert_called_with([[1, 2], [], [3]])
+        mock_generate_comparison_techniques.assert_called_with([[1, 2], [], [3], [1, 2], [], [3]])
         mock_template.render.assert_called_with(tactics='a', techniques='b',
-                                                game_names=['a1 (1)', 'b2 (2)', 'b3 (3)'],
+                                                game_names=['a1 (L1)', 'b2 (L2)', 'b3 (L3)',
+                                                            'a1 (A1)', 'b2 (A2)', 'b3 (A3)'],
                                                 technique_dict='d', single_color=False)
 
     def test_generator_generate_matrix_played(self, setup_generate_matrix_all, mitre_generator):
         mock_template, mock_generate_comparison_techniques = setup_generate_matrix_all
 
         assert mitre_generator.generate_matrix(True) == 'r'
-        mock_generate_comparison_techniques.assert_called_with([[], [3]])
+        mock_generate_comparison_techniques.assert_called_with([[], [3], [], [3]])
         mock_template.render.assert_called_with(tactics='a', techniques='b',
-                                                game_names=['b2 (2)', 'b3 (3)'],
+                                                game_names=['b2 (L2)', 'b3 (L3)', 'b2 (A2)',
+                                                            'b3 (A3)'],
                                                 technique_dict='d', single_color=False)
