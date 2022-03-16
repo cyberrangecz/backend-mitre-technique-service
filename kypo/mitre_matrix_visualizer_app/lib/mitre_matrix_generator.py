@@ -31,11 +31,20 @@ class MitreMatrixGenerator:
             template = Template(file.read())
 
         # TODO this is loading json file, will be replaced by the json file coming from the endpoint
-        with open("kypo/mitre_matrix_visualizer_app/templates/test-many.json", "r") as file:
-            data = json.load(file)
-        titles = [training_definition.get("title") + " (" + str(training_definition.get("id")) + ")"
-                  for training_definition in data
-                  if not played or training_definition.get("played")]
+        with open("kypo/mitre_matrix_visualizer_app/templates/test_linear.json", "r") as file:
+            data_linear = json.load(file)
+        titles_linear = [training_definition.get("title") + " (L"
+                         + str(training_definition.get("id")) + ")" for training_definition
+                         in data_linear if not played or training_definition.get("played")]
+
+        with open("kypo/mitre_matrix_visualizer_app/templates/test_adaptive.json", "r") as file:
+            data_adaptive = json.load(file)
+        titles_adaptive = [training_definition.get("title") + " (A" +
+                           str(training_definition.get("id")) + ")" for training_definition
+                           in data_adaptive if not played or training_definition.get("played")]
+
+        data = data_linear + data_adaptive
+        titles = titles_linear + titles_adaptive
 
         training_techniques = [training_definition.get("mitre_techniques") for training_definition
                                in data if not played or training_definition.get("played")]
