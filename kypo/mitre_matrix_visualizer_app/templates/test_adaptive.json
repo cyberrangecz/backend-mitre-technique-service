@@ -3,7 +3,7 @@
     "title" : "Captain Slovakistan",
     "id" : 1,
     "played" : true,
-    "MITRE_techniques": [
+    "mitre_techniques": [
       "TA0043.T1594",
       "TA0001.T1190",
       "TA0003.T1505.003",
@@ -13,10 +13,10 @@
     ]
   },
   {
-    "title" : "Uploaded Kobylka 3302",
+    "title" : "Adaptive Kobylka 3302",
     "id" : 2,
     "played" : false,
-    "MITRE_techniques" : [
+    "mitre_techniques" : [
       "TA0043.T1595",
       "TA0043.T1592.002",
       "TA0042.T1588.006",
@@ -24,16 +24,16 @@
       "TA0002.T1059.004"]
   },
   {
-    "title": "[Delta] COVID-19 Truth seeker",
+    "title": "XXXXXXX COVID-19 Truth seeker",
     "id" : 3,
     "played" : true,
-    "MITRE_techniques": [  ]
+    "mitre_techniques": [  ]
   },
   {
-    "title": "[Delta] COVID-19 Truth seeker",
-    "id" : 4,
+    "title": "v2 COVID-19 Truth seeker",
+    "id" : 5,
     "played" : true,
-    "MITRE_techniques": [
+    "mitre_techniques": [
       "TA0043.T1595",
       "TA0043.T1592.002"
     ]
