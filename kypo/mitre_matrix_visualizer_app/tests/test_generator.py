@@ -43,7 +43,7 @@ class TestClient:
     def test_generator_generate_matrix_all(self, setup_generate_matrix_all, mitre_generator):
         mock_template, mock_generate_comparison_techniques = setup_generate_matrix_all
 
-        assert mitre_generator.generate_matrix(False) == 'r'
+        assert mitre_generator.generate_matrix("token", False) == 'r'
         mock_generate_comparison_techniques.assert_called_with([[1, 2], [], [3], [1, 2], [], [3]])
         mock_template.render.assert_called_with(tactics='a', techniques='b',
                                                 game_names=['a1 (L1)', 'b2 (L2)', 'b3 (L3)',
@@ -53,7 +53,7 @@ class TestClient:
     def test_generator_generate_matrix_played(self, setup_generate_matrix_all, mitre_generator):
         mock_template, mock_generate_comparison_techniques = setup_generate_matrix_all
 
-        assert mitre_generator.generate_matrix(True) == 'r'
+        assert mitre_generator.generate_matrix("token", True) == 'r'
         mock_generate_comparison_techniques.assert_called_with([[], [3], [], [3]])
         mock_template.render.assert_called_with(tactics='a', techniques='b',
                                                 game_names=['b2 (L2)', 'b3 (L3)', 'b2 (A2)',

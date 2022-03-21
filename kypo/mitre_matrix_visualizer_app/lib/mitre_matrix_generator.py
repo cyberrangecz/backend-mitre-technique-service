@@ -3,10 +3,13 @@ from jinja2 import Template
 from collections import defaultdict
 import requests
 
+TEMPLATES_LOCATION = "kypo/mitre_matrix_visualizer_app/templates/"
 TEMPLATE_HEADERS = {
     'accept': 'application/json',
     'Content-Type': 'application/json'
 }
+MITRE_LINEAR_TRAINING_JAVA_ENDPOINT = "http://127.0.0.1:8083/kypo-rest-training/api/v1/visualizations/training-definitions/mitre-techniques"
+MITRE_ADAPTIVE_TRAINING_JAVA_ENDPOINT = "http://127.0.0.1:8082/kypo-adaptive-training/api/v1/visualizations/training-definitions/mitre-techniques"
 
 
 class MitreMatrixGenerator:
@@ -35,14 +38,12 @@ class MitreMatrixGenerator:
         headers = TEMPLATE_HEADERS
         headers['Authorization'] = auth_bearer_token
 
-        data_linear = requests.get("http://127.0.0.1:8083/kypo-rest-training/api/v1/visualizations/training-definitions/mitre-techniques",
-                                   headers=headers).json()
+        data_linear = requests.get(MITRE_LINEAR_TRAINING_JAVA_ENDPOINT, headers=headers).json()
         titles_linear = [training_definition.get("title") + " (L"
                          + str(training_definition.get("id")) + ")" for training_definition
                          in data_linear if not played or training_definition.get("played")]
 
-        data_adaptive = requests.get("http://127.0.0.1:8082/kypo-adaptive-training/api/v1/visualizations/training-definitions/mitre-techniques",
-                                     headers=headers).json()
+        data_adaptive = requests.get(MITRE_ADAPTIVE_TRAINING_JAVA_ENDPOINT, headers=headers).json()
         titles_adaptive = [training_definition.get("title") + " (A" +
                            str(training_definition.get("id")) + ")" for training_definition
                            in data_adaptive if not played or training_definition.get("played")]
@@ -54,15 +55,15 @@ class MitreMatrixGenerator:
         training_technique_dict = self._generate_comparison_techniques(training_techniques)
 
         # TODO this is generating the matrix into a file for testing purposes
-        with open("kypo/mitre_matrix_visualizer_app/templates/template_file.jinja2", "r") as file:
+        with open(TEMPLATES_LOCATION + "template_file.jinja2", "r") as file:
             template_file = Template(file.read())
-        with open("kypo/mitre_matrix_visualizer_app/templates/result.html", "w") as file:
+        with open(TEMPLATES_LOCATION + "result.html", "w") as file:
             file.write(template_file.render(tactics=tactics, techniques=techniques,
                                             game_names=titles,
                                             technique_dict=training_technique_dict,
                                             single_color=False))
 
-        with open("kypo/mitre_matrix_visualizer_app/templates/template.jinja2", "r") as file:
+        with open(TEMPLATES_LOCATION + "template.jinja2", "r") as file:
             template = Template(file.read())
 
         print("MITRE matrix was generated")
