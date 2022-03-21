@@ -54,15 +54,6 @@ class MitreMatrixGenerator:
                                in data if not played or training_definition.get("played")]
         training_technique_dict = self._generate_comparison_techniques(training_techniques)
 
-        # TODO this is generating the matrix into a file for testing purposes
-        with open(TEMPLATES_LOCATION + "template_file.jinja2", "r") as file:
-            template_file = Template(file.read())
-        with open(TEMPLATES_LOCATION + "result.html", "w") as file:
-            file.write(template_file.render(tactics=tactics, techniques=techniques,
-                                            game_names=titles,
-                                            technique_dict=training_technique_dict,
-                                            single_color=False))
-
         with open(TEMPLATES_LOCATION + "template.jinja2", "r") as file:
             template = Template(file.read())
 
