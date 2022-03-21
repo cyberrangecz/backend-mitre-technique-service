@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from kypo.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import MitreMatrixGenerator
+from kypo.mitre_common_lib.exceptions import AuthenticationTokenMissing
 from django.http import HttpResponse
 from drf_yasg2 import openapi
 from drf_yasg2.utils import swagger_auto_schema
@@ -18,6 +19,13 @@ class GetMatrixVisualisationView(APIView):
         """
         Get matrix of MITRE ATT&CK tactics and techniques related to game definitions.
         """
+        auth_bearer_token = None
+        for header in request.META.items():
+            if header[0] == 'HTTP_AUTHORIZATION':
+                auth_bearer_token = header[1]
+        if not auth_bearer_token:
+            raise AuthenticationTokenMissing
+
         played = request.GET.get('played') == "true"
-        template = MitreMatrixGenerator().generate_matrix(played)
+        template = MitreMatrixGenerator().generate_matrix(auth_bearer_token, played)
         return HttpResponse(template)

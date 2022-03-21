@@ -17,3 +17,10 @@ class ImproperlyConfigured(ApiException):
     Raised when application was not configured properly.
     """
     pass
+
+
+class AuthenticationTokenMissing(ApiException):
+    """
+    Raised when application was not configured properly.
+    """
+    pass
