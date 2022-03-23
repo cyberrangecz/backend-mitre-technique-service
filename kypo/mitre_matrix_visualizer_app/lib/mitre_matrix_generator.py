@@ -54,11 +54,14 @@ class MitreMatrixGenerator:
         training_technique_dict = self._generate_comparison_techniques(training_techniques)
 
         # TODO this is generating the matrix into file for testing purposes
-        # with open(TEMPLATES_LOCATION + "FILE_template.jinja2", "r") as file:
-        #     FILE_template = Template(file.read())
-        # with open("kypo/mitre_matrix_visualizer_app/templates/result.html", "w") as file:
-        #     file.write(FILE_template.render(tactics=tactics, techniques=techniques, linear_game_names=titles_linear, adaptive_game_names=titles_adaptive,
-        #                                technique_dict=training_technique_dict, single_color=False))
+        with open(TEMPLATES_LOCATION + "FILE_template.jinja2", "r") as file:
+            file_template = Template(file.read())
+        with open("kypo/mitre_matrix_visualizer_app/templates/result.html", "w") as file:
+            file.write(file_template.render(tactics=tactics, techniques=techniques,
+                                            linear_game_names=titles_linear,
+                                            adaptive_game_names=titles_adaptive,
+                                            technique_dict=training_technique_dict,
+                                            single_color=False))
 
         with open(TEMPLATES_LOCATION + "template.jinja2", "r") as file:
             template = Template(file.read())
