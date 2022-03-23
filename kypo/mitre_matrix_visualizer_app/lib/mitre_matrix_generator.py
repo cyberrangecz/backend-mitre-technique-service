@@ -67,5 +67,6 @@ class MitreMatrixGenerator:
             template = Template(file.read())
 
         print("MITRE matrix was generated")
-        return template.render(tactics=tactics, techniques=techniques, game_names=titles_linear,
+        return template.render(tactics=tactics, techniques=techniques,
+                               linear_game_names=titles_linear, adaptive_game_names=titles_adaptive,
                                technique_dict=training_technique_dict, single_color=False)
