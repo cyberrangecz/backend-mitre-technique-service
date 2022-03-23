@@ -39,24 +39,30 @@ class MitreMatrixGenerator:
         headers['Authorization'] = auth_bearer_token
 
         data_linear = requests.get(MITRE_LINEAR_TRAINING_JAVA_ENDPOINT, headers=headers).json()
-        titles_linear = [training_definition.get("title") + " (L"
+        titles_linear = [training_definition.get("title") + " ("
                          + str(training_definition.get("id")) + ")" for training_definition
                          in data_linear if not played or training_definition.get("played")]
 
         data_adaptive = requests.get(MITRE_ADAPTIVE_TRAINING_JAVA_ENDPOINT, headers=headers).json()
-        titles_adaptive = [training_definition.get("title") + " (A" +
+        titles_adaptive = [training_definition.get("title") + " (" +
                            str(training_definition.get("id")) + ")" for training_definition
                            in data_adaptive if not played or training_definition.get("played")]
 
         data = data_linear + data_adaptive
-        titles = titles_linear + titles_adaptive
         training_techniques = [training_definition.get("mitre_techniques") for training_definition
                                in data if not played or training_definition.get("played")]
         training_technique_dict = self._generate_comparison_techniques(training_techniques)
+
+        # TODO this is generating the matrix into file for testing purposes
+        # with open(TEMPLATES_LOCATION + "FILE_template.jinja2", "r") as file:
+        #     FILE_template = Template(file.read())
+        # with open("kypo/mitre_matrix_visualizer_app/templates/result.html", "w") as file:
+        #     file.write(FILE_template.render(tactics=tactics, techniques=techniques, linear_game_names=titles_linear, adaptive_game_names=titles_adaptive,
+        #                                technique_dict=training_technique_dict, single_color=False))
 
         with open(TEMPLATES_LOCATION + "template.jinja2", "r") as file:
             template = Template(file.read())
 
         print("MITRE matrix was generated")
-        return template.render(tactics=tactics, techniques=techniques, game_names=titles,
+        return template.render(tactics=tactics, techniques=techniques, game_names=titles_linear,
                                technique_dict=training_technique_dict, single_color=False)

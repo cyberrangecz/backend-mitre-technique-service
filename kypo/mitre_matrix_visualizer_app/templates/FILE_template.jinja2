@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<!-- Based on HTML file of MITRE ATTACK® Matrix for Enterprise https://attack.mitre.org/matrices/enterprise -->
 <style>
 :root {
   --single-color:yellow;
@@ -16,17 +18,6 @@
   --game13:maroon;
   --game14:teal;
   --game15:navy;
-  --game16:saddlebrown;
-  --game17:darkslateblue;
-  --game18:darkkhaki;
-  --game19:#b03060;
-  --game20:orangered;
-  --game21:blueviolet;
-  --game22:orange;
-  --game23:greenyellow;
-  --game24:dodgerblue;
-  --game25:plum;
-  --game26:powderblue;
 }
 
 /* Based on CSS file of MITRE ATTACK® Matrix for Enterprise https://attack.mitre.org/matrices/enterprise */
@@ -1194,50 +1185,6 @@ pre {
   background-color: var(--game15);
   margin-right: 10px;}
 
-.training-head16 {
-  background-color: var(--game16);
-  margin-right: 10px;}
-
-.training-head17 {
-  background-color: var(--game17);
-  margin-right: 10px;}
-
-.training-head18 {
-  background-color: var(--game18);
-  margin-right: 10px;}
-
-.training-head19 {
-  background-color: var(--game19);
-  margin-right: 10px;}
-
-.training-head20 {
-  background-color: var(--game20);
-  margin-right: 10px;}
-
-.training-head21 {
-  background-color: var(--game21);
-  margin-right: 10px;}
-
-.training-head22 {
-  background-color: var(--game22);
-  margin-right: 10px;}
-
-.training-head23 {
-  background-color: var(--game23);
-  margin-right: 10px;}
-
-.training-head24 {
-  background-color: var(--game24);
-  margin-right: 10px;}
-
-.training-head25 {
-  background-color: var(--game25);
-  margin-right: 10px;}
-
-.training-head26 {
-  background-color: var(--game26);
-  margin-right: 10px;}
-
 .training-dot1 {
   background-color: var(--game1);
   margin: 5px;
@@ -1313,67 +1260,18 @@ pre {
   margin: 5px;
   min-width: 10px;}
 
-.training-dot16 {
-  background-color: var(--game16);
-  margin: 5px;
-  min-width: 10px;}
-
-.training-dot17 {
-  background-color: var(--game17);
-  margin: 5px;
-  min-width: 10px;}
-
-.training-dot18 {
-  background-color: var(--game18);
-  margin: 5px;
-  min-width: 10px;}
-
-.training-dot19 {
-  background-color: var(--game19);
-  margin: 5px;
-  min-width: 10px;}
-
-.training-dot20 {
-  background-color: var(--game20);
-  margin: 5px;
-  min-width: 10px;}
-
-.training-dot21 {
-  background-color: var(--game21);
-  margin: 5px;
-  min-width: 10px;}
-
-.training-dot22 {
-  background-color: var(--game22);
-  margin: 5px;
-  min-width: 10px;}
-
-.training-dot23 {
-  background-color: var(--game23);
-  margin: 5px;
-  min-width: 10px;}
-
-.training-dot24 {
-  background-color: var(--game24);
-  margin: 5px;
-  min-width: 10px;}
-
-.training-dot25 {
-  background-color: var(--game25);
-  margin: 5px;
-  min-width: 10px;}
-
-.training-dot26 {
-  background-color: var(--game26);
-  margin: 5px;
-  min-width: 10px;}
-
 .cell-selected {
   background-color:var(--single-color);}
 
 </style>
 
-<div>
+<html lang='en'>
+  <head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Game comparison</title>
+  </head>
+
+  <body>
   {% set count = namespace(value=1) %}
   <p>Linear training:
   {% for game_name in linear_game_names %}
@@ -1394,76 +1292,77 @@ pre {
   {% endfor %}
   </p>
 
-  <div id="layouts-content">
-    <div class="matrix-type side">
-      <div class="matrix-container p-3">
-        <div class="scroll-indicator-group">
-          <div class="scroll-indicator left">
-            <div class="cover"></div>
-          </div>
-          <div class="overflow-x-auto matrix-scroll-box pb-3">
+    <div id="layouts-content">
+      <div class="matrix-type side">
+        <div class="matrix-container p-3">
+          <div class="scroll-indicator-group">
+            <div class="scroll-indicator left">
+              <div class="cover"></div>
+            </div>
+            <div class="overflow-x-auto matrix-scroll-box pb-3">
 
-            <table class="matrix side">
-              <thead>
-                <tr>
-                {% for tactic in tactics %}
-                  <td class="tactic name">
-                    <a data-toggle="tooltip" data-placement="top" title="{{ tactic["external_references"][0]["external_id"] }}">{{ tactic["name"] }}</a>
-                  </td>
-                {% endfor %}
-                </tr>
-                <tr>
-                {% for tactic in tactics %}
-                  <td class="tactic count">
-                    {{ techniques[loop.index0]|length }} techniques
-                  </td>
-                {% endfor %}
-                </tr>
-              </thead>
+              <table class="matrix side">
+                <thead>
+                  <tr>
+                  {% for tactic in tactics %}
+                    <td class="tactic name">
+                      <a data-toggle="tooltip" data-placement="top" title="{{ tactic["external_references"][0]["external_id"] }}">{{ tactic["name"] }}</a>
+                    </td>
+                  {% endfor %}
+                  </tr>
+                  <tr>
+                  {% for tactic in tactics %}
+                    <td class="tactic count">
+                      {{ techniques[loop.index0]|length }} techniques
+                    </td>
+                  {% endfor %}
+                  </tr>
+                </thead>
 
-              <tbody>
-                <tr>
-                {% for tactic in tactics%}
-                  <td class="tactic">
-                    <table class="techniques-table">
-                      <tr class="technique-row" >
-                        <td>
-                          <table class="supertechnique">
-                            <tr>
-                              <td class="technique">
-                              {% for technique in techniques[loop.index0] %}
-                                {% if single_color %}
-                                  {% if tactic["external_references"][0]["external_id"] + "." + technique["external_references"][0]["external_id"] in technique_set %}
-                                <div class="technique-cell cell-selected" >
+                <tbody>
+                  <tr>
+                  {% for tactic in tactics%}
+                    <td class="tactic">
+                      <table class="techniques-table">
+                        <tr class="technique-row" >
+                          <td>
+                            <table class="supertechnique">
+                              <tr>
+                                <td class="technique">
+                                {% for technique in techniques[loop.index0] %}
+                                  {% if single_color %}
+                                    {% if tactic["external_references"][0]["external_id"] + "." + technique["external_references"][0]["external_id"] in technique_set %}
+                                  <div class="technique-cell cell-selected" >
+                                    {% else %}
+                                  <div class="technique-cell" >
+                                    {% endif %}
+                                    <a data-toggle="tooltip" data-placement="top" title="{{ technique["external_references"][0]["external_id"] }}">{{ technique["name"] }}</a>
+                                  </div>
                                   {% else %}
-                                <div class="technique-cell" >
+                                  <div class="technique-cell " >
+                                    <a data-toggle="tooltip" data-placement="top" title="{{ technique["external_references"][0]["external_id"] }}">{{ technique["name"] }}</a>
+                                    {% for training in technique_dict[tactic["external_references"][0]["external_id"]][technique["external_references"][0]["external_id"]] %}
+                                    <div class={{ "training-dot" ~ training }}>&nbsp;</div>
+                                    {% endfor %}
+                                  </div>
                                   {% endif %}
-                                  <a data-toggle="tooltip" data-placement="top" title="{{ technique["external_references"][0]["external_id"] }}">{{ technique["name"] }}</a>
-                                </div>
-                                {% else %}
-                                <div class="technique-cell " >
-                                  <a data-toggle="tooltip" data-placement="top" title="{{ technique["external_references"][0]["external_id"] }}">{{ technique["name"] }}</a>
-                                  {% for training in technique_dict[tactic["external_references"][0]["external_id"]][technique["external_references"][0]["external_id"]] %}
-                                  <div class={{ "training-dot" ~ training }}>&nbsp;</div>
-                                  {% endfor %}
-                                </div>
-                                {% endif %}
-                              {% endfor %}
-                              </td>
-                            </tr>
-                          </table>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                {% endfor %}
-                </tr>
-              </tbody>
-            </table>
+                                {% endfor %}
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  {% endfor %}
+                  </tr>
+                </tbody>
+              </table>
 
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
+  </body>
+</html>
