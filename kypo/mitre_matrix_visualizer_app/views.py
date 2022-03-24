@@ -1,9 +1,15 @@
 from rest_framework.views import APIView
-from kypo.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import MitreMatrixGenerator
+from rest_framework.response import Response
+from rest_framework import generics
+
+from kypo.mitre_matrix_visualizer_app import serializers
+from kypo.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import MitreMatrixGenerator, MitreClient
 from kypo.mitre_common_lib.exceptions import AuthenticationTokenMissing
 from django.http import HttpResponse
 from drf_yasg2 import openapi
 from drf_yasg2.utils import swagger_auto_schema
+
+from kypo.mitre_matrix_visualizer_app.lib.technique import Technique
 
 
 class GetMatrixVisualisationView(APIView):
@@ -29,3 +35,12 @@ class GetMatrixVisualisationView(APIView):
         played = request.GET.get('played') == "true"
         template = MitreMatrixGenerator().generate_matrix(auth_bearer_token, played)
         return HttpResponse(template)
+
+
+class GetMitreTechniqueIndex(generics.ListAPIView):
+    serializer_class = serializers.TechniqueSerializer
+
+    def get_queryset(self):
+        client = MitreClient()
+        client.get_tactics_techniques()
+        return client.technique_index

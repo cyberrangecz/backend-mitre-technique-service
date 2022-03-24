@@ -2,6 +2,8 @@ from taxii2client.v20 import Collection
 from stix2 import TAXIICollectionSource, Filter
 from django.core.cache import cache
 
+from kypo.mitre_matrix_visualizer_app.lib.technique import Technique
+
 SOURCE_WEBSITE = "https://cti-taxii.mitre.org/stix/collections/"
 MATRIX_ID = "95ecc380-afe9-11e4-9b6c-751b66dd541e"
 MATRIX_NAME = "Enterprise ATT&CK"
@@ -9,6 +11,8 @@ MITRE_CACHE_TIMEOUT = 86400
 
 
 class MitreClient:
+    technique_index = []
+
     def __init__(self):
         collection = Collection(SOURCE_WEBSITE + MATRIX_ID)
         self.source = TAXIICollectionSource(collection)
@@ -58,13 +62,20 @@ class MitreClient:
         Gather techniques of matrix.
         Based on code from MITRE ATTACK® official repository https://github.com/mitre/cti.
         """
-        techniques = []
+        all_techniques = []
+        self.technique_index = []
         for tactic in tactics:
-            technique = self._get_tactic_techniques(tactic["x_mitre_shortname"])
-            technique = self._remove_revoked_deprecated(technique)
-            technique.sort(key=lambda x: x["name"])
-            techniques.append(technique)
-        return techniques
+            tactic_techniques = self._get_tactic_techniques(tactic["x_mitre_shortname"])
+            tactic_techniques = self._remove_revoked_deprecated(tactic_techniques)
+            tactic_techniques.sort(key=lambda x: x["name"])
+
+            for technique in tactic_techniques:
+                technique_index_code = f"{tactic['external_references'][0]['external_id']}." \
+                                       f"{technique['external_references'][0]['external_id']}"
+                self.technique_index.append(Technique(technique_index_code, technique["name"]))
+
+            all_techniques.append(tactic_techniques)
+        return all_techniques
 
     def get_tactics_techniques(self) -> (list, list):
         print("Gathering matrix content:")
