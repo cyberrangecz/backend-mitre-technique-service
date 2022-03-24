@@ -4,7 +4,7 @@ import pytest
 from collections import defaultdict
 
 
-class TestClient:
+class TestGenerator:
     training_definition_data = [
         {"title": "a1", "id": "1", "played": False, "mitre_techniques": [1, 2]},
         {"title": "b2", "id": "2", "played": True, "mitre_techniques": []},
@@ -29,7 +29,7 @@ class TestClient:
     def setup_generate_matrix_all(self, mocker):
         mock_get_tactics_techniques = mocker.patch(
             'kypo.mitre_matrix_visualizer_app.lib.mitre_techniques_client.MitreClient.get_tactics_techniques')
-        mock_get_tactics_techniques.return_value = ('a', 'b')
+        mock_get_tactics_techniques.return_value = ('a', 'b', 'c')
         mock_template = mocker.MagicMock()
         mock_template.render.return_value = 'r'
         mock_template_init = mocker.patch('jinja2.Template.__new__')
@@ -54,8 +54,8 @@ class TestClient:
 
         mock_generate_comparison_techniques.assert_called_with([[1, 2], [], [3], [1, 2], [], [3]])
         mock_template.render.assert_called_with(tactics='a', techniques='b',
-                                                game_names=['a1 (L1)', 'b2 (L2)', 'b3 (L3)',
-                                                            'a1 (A1)', 'b2 (A2)', 'b3 (A3)'],
+                                                linear_game_names=['a1 (1)', 'b2 (2)', 'b3 (3)'],
+                                                adaptive_game_names=['a1 (1)', 'b2 (2)', 'b3 (3)'],
                                                 technique_dict='d', single_color=False)
 
     def test_generator_generate_matrix_played(self, setup_generate_matrix_all, mitre_generator):
@@ -68,6 +68,6 @@ class TestClient:
 
         mock_generate_comparison_techniques.assert_called_with([[], [3], [], [3]])
         mock_template.render.assert_called_with(tactics='a', techniques='b',
-                                                game_names=['b2 (L2)', 'b3 (L3)', 'b2 (A2)',
-                                                            'b3 (A3)'],
+                                                linear_game_names=['b2 (2)', 'b3 (3)'],
+                                                adaptive_game_names=['b2 (2)', 'b3 (3)'],
                                                 technique_dict='d', single_color=False)
