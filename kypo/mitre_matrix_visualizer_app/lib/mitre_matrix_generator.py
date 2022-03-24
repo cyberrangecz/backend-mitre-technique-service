@@ -32,7 +32,7 @@ class MitreMatrixGenerator:
 
     # noinspection PyMethodMayBeStatic
     def generate_matrix(self, auth_bearer_token: str, played: bool):
-        tactics, techniques = MitreClient().get_tactics_techniques()
+        tactics, techniques, _ = MitreClient().get_tactics_techniques()
 
         print("Generating MITRE matrix...")
         headers = TEMPLATE_HEADERS

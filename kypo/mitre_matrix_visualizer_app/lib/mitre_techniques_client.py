@@ -11,7 +11,6 @@ MITRE_CACHE_TIMEOUT = 86400
 
 
 class MitreClient:
-    technique_index = []
 
     def __init__(self):
         collection = Collection(SOURCE_WEBSITE + MATRIX_ID)
@@ -57,13 +56,13 @@ class MitreClient:
             )
         )
 
-    def _get_matrix_techniques(self, tactics) -> list:
+    def _get_matrix_techniques(self, tactics) -> (list, list):
         """
         Gather techniques of matrix.
         Based on code from MITRE ATTACK® official repository https://github.com/mitre/cti.
         """
         all_techniques = []
-        self.technique_index = []
+        technique_index = []
         for tactic in tactics:
             tactic_techniques = self._get_tactic_techniques(tactic["x_mitre_shortname"])
             tactic_techniques = self._remove_revoked_deprecated(tactic_techniques)
@@ -72,12 +71,12 @@ class MitreClient:
             for technique in tactic_techniques:
                 technique_index_code = f"{tactic['external_references'][0]['external_id']}." \
                                        f"{technique['external_references'][0]['external_id']}"
-                self.technique_index.append(Technique(technique_index_code, technique["name"]))
+                technique_index.append(Technique(technique_index_code, technique["name"]))
 
             all_techniques.append(tactic_techniques)
-        return all_techniques
+        return all_techniques, technique_index
 
-    def get_tactics_techniques(self) -> (list, list):
+    def get_tactics_techniques(self) -> (list, list, list):
         print("Gathering matrix content:")
         tactics = cache.get("mitre_tactics", None)
         if not tactics:
@@ -85,8 +84,10 @@ class MitreClient:
             cache.set("mitre_tactics", tactics, MITRE_CACHE_TIMEOUT)
 
         techniques = cache.get("mitre_techniques", None)
+        technique_index = cache.get("technique_index", None)
         if not techniques:
-            techniques = self._get_matrix_techniques(tactics)
+            (techniques, technique_index) = self._get_matrix_techniques(tactics)
             cache.set("mitre_techniques", techniques, MITRE_CACHE_TIMEOUT)
+            cache.set("technique_index", technique_index, MITRE_CACHE_TIMEOUT)
 
-        return tactics, techniques
+        return tactics, techniques, technique_index

@@ -40,7 +40,13 @@ class GetMatrixVisualisationView(APIView):
 class GetMitreTechniqueIndex(generics.ListAPIView):
     serializer_class = serializers.TechniqueSerializer
 
-    def get_queryset(self):
+    def get(self, request, *args, **kwargs):
+        """
+        Get index of mitre techniques containing their names and codes.
+        """
+
         client = MitreClient()
-        client.get_tactics_techniques()
-        return client.technique_index
+        (_, _, technique_index) = client.get_tactics_techniques()
+        serializer = self.serializer_class(technique_index, many=True)
+        return Response({'techniques': serializer.data})
+
