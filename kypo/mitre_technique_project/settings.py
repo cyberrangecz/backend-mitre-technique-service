@@ -131,6 +131,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = f'/{KYPO_SERVICE_CONFIG.microservice_name}/static/'
 
 REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'kypo.mitre_common_lib.exc_handler.custom_exception_handler',
     'DEFAULT_AUTHENTICATION_CLASSES': [],
     'DEFAULT_PERMISSIONS_CLASSES': [],
     'UNAUTHENTICATED_USER': None,
