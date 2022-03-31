@@ -4,7 +4,7 @@ from kypo.mitre_common_lib.kypo_config import KypoConfiguration
 from kypo.mitre_common_lib.exceptions import ImproperlyConfigured
 
 DEBUG = True
-MICROSERVICE_NAME = 'kypo-sandbox-service'
+MICROSERVICE_NAME = 'kypo-mitre-technique-service'
 ALLOWED_HOSTS = ['*']  # Allow everyone
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = []

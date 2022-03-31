@@ -12,6 +12,7 @@ stix2 = "*"
 yamlize = ">=0.6"
 drf-yasg2 = "*"
 django-cors-headers = "*"
+structlog = "*"
 
 [dev-packages]
 # tox

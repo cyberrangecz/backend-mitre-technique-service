@@ -1,16 +1,18 @@
-from kypo.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import MitreMatrixGenerator
-import pytest
+from kypo.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import MitreMatrixGenerator, \
+    TEMPLATE_HEADERS
+from django.conf import settings
 from collections import defaultdict
-#from jinja2 import Template
-#import jinja2
+import pytest
 
 
-class TestClient:
+class TestGenerator:
     training_definition_data = [
         {"title": "a1", "id": "1", "played": False, "mitre_techniques": [1, 2]},
         {"title": "b2", "id": "2", "played": True, "mitre_techniques": []},
         {"title": "b3", "id": "3", "played": True, "mitre_techniques": [3]}
     ]
+    headers = TEMPLATE_HEADERS
+    headers['Authorization'] = "token"
 
     @pytest.fixture
     def mitre_generator(self):
@@ -28,34 +30,49 @@ class TestClient:
     def setup_generate_matrix_all(self, mocker):
         mock_get_tactics_techniques = mocker.patch(
             'kypo.mitre_matrix_visualizer_app.lib.mitre_techniques_client.MitreClient.get_tactics_techniques')
-        mock_get_tactics_techniques.return_value = ('a', 'b')
+        mock_get_tactics_techniques.return_value = ('a', 'b', 'c')
         mock_template = mocker.MagicMock()
         mock_template.render.return_value = 'r'
         mock_template_init = mocker.patch('jinja2.Template.__new__')
         mock_template_init.return_value = mock_template
-        mock_data = mocker.patch('json.load')
-        mock_data.return_value = self.training_definition_data
+
+        mock_request_result = mocker.MagicMock()
+        mock_request_result.json.return_value = self.training_definition_data
+        mock_request = mocker.patch('requests.get')
+        mock_request.return_value = mock_request_result
         mock_generate_comparison_techniques = mocker.patch(
             'kypo.mitre_matrix_visualizer_app.lib.mitre_matrix_generator.MitreMatrixGenerator._generate_comparison_techniques')
         mock_generate_comparison_techniques.return_value = 'd'
-        return mock_template, mock_generate_comparison_techniques
+        return mock_template, mock_generate_comparison_techniques, mock_request
 
     def test_generator_generate_matrix_all(self, setup_generate_matrix_all, mitre_generator):
-        mock_template, mock_generate_comparison_techniques = setup_generate_matrix_all
+        mock_template, mock_generate_comparison_techniques, mock_request = setup_generate_matrix_all
 
-        assert mitre_generator.generate_matrix(False) == 'r'
+        assert mitre_generator.generate_matrix("token", False) == 'r'
+
+        mock_request.assert_any_call(settings.KYPO_CONFIG.java_linear_training_mitre_endpoint,
+                                     headers=self.headers)
+        mock_request.assert_called_with(settings.KYPO_CONFIG.java_adaptive_training_mitre_endpoint,
+                                        headers=self.headers)
+
         mock_generate_comparison_techniques.assert_called_with([[1, 2], [], [3], [1, 2], [], [3]])
         mock_template.render.assert_called_with(tactics='a', techniques='b',
-                                                game_names=['a1 (L1)', 'b2 (L2)', 'b3 (L3)',
-                                                            'a1 (A1)', 'b2 (A2)', 'b3 (A3)'],
+                                                linear_game_names=['a1 (1)', 'b2 (2)', 'b3 (3)'],
+                                                adaptive_game_names=['a1 (1)', 'b2 (2)', 'b3 (3)'],
                                                 technique_dict='d', single_color=False)
 
     def test_generator_generate_matrix_played(self, setup_generate_matrix_all, mitre_generator):
-        mock_template, mock_generate_comparison_techniques = setup_generate_matrix_all
+        mock_template, mock_generate_comparison_techniques, mock_request = setup_generate_matrix_all
 
-        assert mitre_generator.generate_matrix(True) == 'r'
+        assert mitre_generator.generate_matrix("token", True) == 'r'
+
+        mock_request.assert_any_call(settings.KYPO_CONFIG.java_linear_training_mitre_endpoint,
+                                     headers=self.headers)
+        mock_request.assert_called_with(settings.KYPO_CONFIG.java_adaptive_training_mitre_endpoint,
+                                        headers=self.headers)
+
         mock_generate_comparison_techniques.assert_called_with([[], [3], [], [3]])
         mock_template.render.assert_called_with(tactics='a', techniques='b',
-                                                game_names=['b2 (L2)', 'b3 (L3)', 'b2 (A2)',
-                                                            'b3 (A3)'],
+                                                linear_game_names=['b2 (2)', 'b3 (3)'],
+                                                adaptive_game_names=['b2 (2)', 'b3 (3)'],
                                                 technique_dict='d', single_color=False)

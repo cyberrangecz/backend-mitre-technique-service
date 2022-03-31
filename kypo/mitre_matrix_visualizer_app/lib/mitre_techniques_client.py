@@ -1,6 +1,10 @@
 from taxii2client.v20 import Collection
 from stix2 import TAXIICollectionSource, Filter
 from django.core.cache import cache
+from django.conf import settings
+import pickle
+
+from kypo.mitre_matrix_visualizer_app.lib.technique import Technique
 
 SOURCE_WEBSITE = "https://cti-taxii.mitre.org/stix/collections/"
 MATRIX_ID = "95ecc380-afe9-11e4-9b6c-751b66dd541e"
@@ -9,6 +13,7 @@ MITRE_CACHE_TIMEOUT = 86400
 
 
 class MitreClient:
+
     def __init__(self):
         collection = Collection(SOURCE_WEBSITE + MATRIX_ID)
         self.source = TAXIICollectionSource(collection)
@@ -53,20 +58,27 @@ class MitreClient:
             )
         )
 
-    def _get_matrix_techniques(self, tactics) -> list:
+    def _get_matrix_techniques(self, tactics) -> (list, list):
         """
         Gather techniques of matrix.
         Based on code from MITRE ATTACK® official repository https://github.com/mitre/cti.
         """
-        techniques = []
+        all_techniques = []
+        technique_index = []
         for tactic in tactics:
-            technique = self._get_tactic_techniques(tactic["x_mitre_shortname"])
-            technique = self._remove_revoked_deprecated(technique)
-            technique.sort(key=lambda x: x["name"])
-            techniques.append(technique)
-        return techniques
+            tactic_techniques = self._get_tactic_techniques(tactic["x_mitre_shortname"])
+            tactic_techniques = self._remove_revoked_deprecated(tactic_techniques)
+            tactic_techniques.sort(key=lambda x: x["name"])
 
-    def get_tactics_techniques(self) -> (list, list):
+            for technique in tactic_techniques:
+                technique_index_code = f"{tactic['external_references'][0]['external_id']}." \
+                                       f"{technique['external_references'][0]['external_id']}"
+                technique_index.append(Technique(technique_index_code, technique["name"]))
+
+            all_techniques.append(tactic_techniques)
+        return all_techniques, technique_index
+
+    def get_tactics_techniques(self) -> (list, list, list):
         print("Gathering matrix content:")
         tactics = cache.get("mitre_tactics", None)
         if not tactics:
@@ -74,8 +86,24 @@ class MitreClient:
             cache.set("mitre_tactics", tactics, MITRE_CACHE_TIMEOUT)
 
         techniques = cache.get("mitre_techniques", None)
+        technique_index = cache.get("technique_index", None)
         if not techniques:
-            techniques = self._get_matrix_techniques(tactics)
+            (techniques, technique_index) = self._get_matrix_techniques(tactics)
             cache.set("mitre_techniques", techniques, MITRE_CACHE_TIMEOUT)
+            cache.set("technique_index", technique_index, MITRE_CACHE_TIMEOUT)
 
-        return tactics, techniques
+        return tactics, techniques, technique_index
+
+    def get_tactics_techniques_with_backup(self) -> (list, list, list):
+        try:
+            (tactics, techniques, technique_index) = self.get_tactics_techniques()
+            with open(settings.KYPO_CONFIG.file_storage_location+"mitre_attack_backup_data",
+                      'wb') as backup:
+                pickle.dump((tactics, techniques, technique_index), backup)
+        except Exception as exc:
+            print(f"The method getting tactics and techniques failed with: {exc}\n"
+                  f"Falling back on locally stored MITRE data.")
+            with open(settings.KYPO_CONFIG.file_storage_location+"mitre_attack_backup_data",
+                      'rb') as backup:
+                (tactics, techniques, technique_index) = pickle.load(backup)
+        return tactics, techniques, technique_index
