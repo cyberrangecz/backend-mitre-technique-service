@@ -1,7 +1,8 @@
 from kypo.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import MitreMatrixGenerator, \
-    TEMPLATE_HEADERS, MITRE_LINEAR_TRAINING_JAVA_ENDPOINT, MITRE_ADAPTIVE_TRAINING_JAVA_ENDPOINT
-import pytest
+    TEMPLATE_HEADERS
+from django.conf import settings
 from collections import defaultdict
+import pytest
 
 
 class TestGenerator:
@@ -49,8 +50,10 @@ class TestGenerator:
 
         assert mitre_generator.generate_matrix("token", False) == 'r'
 
-        mock_request.assert_any_call(MITRE_LINEAR_TRAINING_JAVA_ENDPOINT, headers=self.headers)
-        mock_request.assert_called_with(MITRE_ADAPTIVE_TRAINING_JAVA_ENDPOINT, headers=self.headers)
+        mock_request.assert_any_call(settings.KYPO_CONFIG.java_linear_training_mitre_endpoint,
+                                     headers=self.headers)
+        mock_request.assert_called_with(settings.KYPO_CONFIG.java_adaptive_training_mitre_endpoint,
+                                        headers=self.headers)
 
         mock_generate_comparison_techniques.assert_called_with([[1, 2], [], [3], [1, 2], [], [3]])
         mock_template.render.assert_called_with(tactics='a', techniques='b',
@@ -63,8 +66,10 @@ class TestGenerator:
 
         assert mitre_generator.generate_matrix("token", True) == 'r'
 
-        mock_request.assert_any_call(MITRE_LINEAR_TRAINING_JAVA_ENDPOINT, headers=self.headers)
-        mock_request.assert_called_with(MITRE_ADAPTIVE_TRAINING_JAVA_ENDPOINT, headers=self.headers)
+        mock_request.assert_any_call(settings.KYPO_CONFIG.java_linear_training_mitre_endpoint,
+                                     headers=self.headers)
+        mock_request.assert_called_with(settings.KYPO_CONFIG.java_adaptive_training_mitre_endpoint,
+                                        headers=self.headers)
 
         mock_generate_comparison_techniques.assert_called_with([[], [3], [], [3]])
         mock_template.render.assert_called_with(tactics='a', techniques='b',

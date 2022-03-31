@@ -1,8 +1,8 @@
 from kypo.mitre_matrix_visualizer_app.lib.mitre_techniques_client import MitreClient
 from jinja2 import Template
 from collections import defaultdict
-import requests
 from django.conf import settings
+import requests
 
 TEMPLATE_HEADERS = {
     'accept': 'application/json',
