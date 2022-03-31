@@ -3,8 +3,7 @@ from jinja2 import Template
 from collections import defaultdict
 import requests
 from django.conf import settings
-                # TODO from this load the MITRE_LINEAR_TRAINING_JAVA_ENDPOINT, also template and put it to clinet aswell
-TEMPLATES_LOCATION = "kypo/mitre_matrix_visualizer_app/templates/"
+
 TEMPLATE_HEADERS = {
     'accept': 'application/json',
     'Content-Type': 'application/json'
@@ -39,12 +38,14 @@ class MitreMatrixGenerator:
         headers = TEMPLATE_HEADERS
         headers['Authorization'] = auth_bearer_token
 
-        data_linear = requests.get(MITRE_LINEAR_TRAINING_JAVA_ENDPOINT, headers=headers).json()
+        data_linear = requests.get(settings.KYPO_CONFIG.java_linear_training_mitre_endpoint,
+                                   headers=headers).json()
         titles_linear = [training_definition.get("title") + " ("
                          + str(training_definition.get("id")) + ")" for training_definition
                          in data_linear if not played or training_definition.get("played")]
 
-        data_adaptive = requests.get(MITRE_ADAPTIVE_TRAINING_JAVA_ENDPOINT, headers=headers).json()
+        data_adaptive = requests.get(settings.KYPO_CONFIG.java_adaptive_training_mitre_endpoint,
+                                     headers=headers).json()
         titles_adaptive = [training_definition.get("title") + " (" +
                            str(training_definition.get("id")) + ")" for training_definition
                            in data_adaptive if not played or training_definition.get("played")]
@@ -54,7 +55,7 @@ class MitreMatrixGenerator:
                                in data if not played or training_definition.get("played")]
         training_technique_dict = self._generate_comparison_techniques(training_techniques)
 
-        with open(TEMPLATES_LOCATION + "template.jinja2", "r") as file:
+        with open(settings.KYPO_CONFIG.file_storage_location + "template.jinja2", "r") as file:
             template = Template(file.read())
 
         print("MITRE matrix was generated")

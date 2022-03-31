@@ -14,13 +14,16 @@ debug: True
 # A list of origins that are authorized to make cross-site HTTP requests.
 #cors_origin_whitelist: []
 
-# An address of java linear training endpoint
-#java_linear_training: "http://127.0.0.1:8083/kypo-rest-training/api/v1/visualizations/training-definitions/mitre-techniques"
-
-# An address of java adaptive training endpoint
-#java_linear_training: "http://127.0.0.1:8082/kypo-adaptive-training/api/v1/visualizations/training-definitions/mitre-techniques"
-
 application_configuration:
     # A path to directory of CA certificates or file of CA certificates, i.e. CA bundle.
     # Use in case of self-signed certificates in related services.
     ssl_ca_certificate_verify: ""
+
+    # An address of java linear training endpoint
+    #java_linear_training_mitre_endpoint: "http://127.0.0.1:8083/kypo-rest-training/api/v1/visualizations/training-definitions/mitre-techniques"
+
+    # An address of java adaptive training endpoint
+    #java_adaptive_training_mitre_endpoint: "http://127.0.0.1:8082/kypo-adaptive-training/api/v1/visualizations/training-definitions/mitre-techniques"
+
+    # The location of jinja template and the locally stored MITRE data
+    #file_storage_location: "kypo/mitre_matrix_visualizer_app/templates/"
