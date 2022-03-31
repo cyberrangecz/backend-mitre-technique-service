@@ -1,5 +1,5 @@
 # Name of the microservice.
-#microservice_name: kypo-sandbox-service
+#microservice_name: kypo-mitre-technique-service
 
 # A boolean that turns on/off debug mode.
 # SECURITY WARNING: don't run with debug turned on in production!
