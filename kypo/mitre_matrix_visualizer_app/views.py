@@ -46,7 +46,6 @@ class GetMitreTechniqueIndex(generics.ListAPIView):
         """
 
         client = MitreClient()
-        (_, _, technique_index) = client.get_tactics_techniques()
+        (_, _, technique_index) = client.get_tactics_techniques_with_backup()
         serializer = self.serializer_class(technique_index, many=True)
         return Response({'techniques': serializer.data})
-

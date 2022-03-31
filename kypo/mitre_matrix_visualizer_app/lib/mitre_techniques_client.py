@@ -1,6 +1,7 @@
 from taxii2client.v20 import Collection
 from stix2 import TAXIICollectionSource, Filter
 from django.core.cache import cache
+import pickle
 
 from kypo.mitre_matrix_visualizer_app.lib.technique import Technique
 
@@ -90,4 +91,18 @@ class MitreClient:
             cache.set("mitre_techniques", techniques, MITRE_CACHE_TIMEOUT)
             cache.set("technique_index", technique_index, MITRE_CACHE_TIMEOUT)
 
+        return tactics, techniques, technique_index
+
+    def get_tactics_techniques_with_backup(self) -> (list, list, list):
+        try:
+            (tactics, techniques, technique_index) = self.get_tactics_techniques()
+            with open("kypo/mitre_matrix_visualizer_app/templates/"+"mitre_attack_backup_data",
+                      'wb') as backup:
+                pickle.dump((tactics, techniques, technique_index), backup)
+        except Exception as exc:
+            print(f"The method getting tactics and techniques failed with: {exc}\n"
+                  f"Falling back on locally stored MITRE data.")
+            with open("kypo/mitre_matrix_visualizer_app/templates/"+"mitre_attack_backup_data",
+                      'rb') as backup:
+                (tactics, techniques, technique_index) = pickle.load(backup)
         return tactics, techniques, technique_index
