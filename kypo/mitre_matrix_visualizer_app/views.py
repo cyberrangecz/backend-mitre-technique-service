@@ -30,7 +30,7 @@ class GetMatrixVisualisationView(APIView):
             if header[0] == 'HTTP_AUTHORIZATION':
                 auth_bearer_token = header[1]
         if not auth_bearer_token:
-            raise AuthenticationTokenMissing
+            raise AuthenticationTokenMissing("Authentication token is missing from the header")
 
         played = request.GET.get('played') == "true"
         template = MitreMatrixGenerator().generate_matrix(auth_bearer_token, played)
@@ -44,7 +44,6 @@ class GetMitreTechniqueIndex(generics.ListAPIView):
         """
         Get index of mitre techniques containing their names and codes.
         """
-
         client = MitreClient()
         (_, _, technique_index) = client.get_tactics_techniques_with_backup()
         serializer = self.serializer_class(technique_index, many=True)

@@ -1,8 +1,8 @@
 from taxii2client.v20 import Collection
 from stix2 import TAXIICollectionSource, Filter
 from django.core.cache import cache
-import pickle
 from django.conf import settings
+import pickle
 
 from kypo.mitre_matrix_visualizer_app.lib.technique import Technique
 
