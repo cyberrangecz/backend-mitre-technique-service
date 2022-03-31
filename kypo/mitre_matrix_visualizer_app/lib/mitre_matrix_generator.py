@@ -8,8 +8,6 @@ TEMPLATE_HEADERS = {
     'accept': 'application/json',
     'Content-Type': 'application/json'
 }
-MITRE_LINEAR_TRAINING_JAVA_ENDPOINT = "http://127.0.0.1:8083/kypo-rest-training/api/v1/visualizations/training-definitions/mitre-techniques"
-MITRE_ADAPTIVE_TRAINING_JAVA_ENDPOINT = "http://127.0.0.1:8082/kypo-adaptive-training/api/v1/visualizations/training-definitions/mitre-techniques"
 
 
 class MitreMatrixGenerator:
