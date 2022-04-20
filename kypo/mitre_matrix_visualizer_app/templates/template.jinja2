@@ -1375,7 +1375,9 @@ pre {
 
 <div>
   {% set count = namespace(value=1) %}
-  <p>Linear training:
+  <p>
+  {% if linear_game_names %}
+  Linear training:
   {% for game_name in linear_game_names %}
     {{game_name}}{% if single_color %}{% if loop.index != game_names|length %},{% endif %}
     {% else %}
@@ -1384,6 +1386,9 @@ pre {
     {% set count.value = count.value + 1 %}
   {% endfor %}
   <br> <br>
+  {% endif %}
+
+  {% if adaptive_game_names %}
   Adaptive training:
   {% for game_name in adaptive_game_names %}
     {{game_name}}{% if single_color %}{% if loop.index != game_names|length %},{% endif %}
@@ -1392,6 +1397,7 @@ pre {
     {% endif %}
     {% set count.value = count.value + 1 %}
   {% endfor %}
+  {% endif %}
   </p>
 
   <div id="layouts-content">
