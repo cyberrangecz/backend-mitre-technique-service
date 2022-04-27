@@ -19,7 +19,7 @@ docker_image_push:
     CI_CUSTOM_IMAGE_NAME: kypo-mitre-technique-service
   stage: docker_image_push
   image:
-    name: gcr.io/kaniko-project/executor:latest
+    name: gcr.io/kaniko-project/executor:debug-v0.17.1
     entrypoint: [ "" ]
   script:
     - export CI_CUSTOM_REGISTRY_IMAGE="${CI_REGISTRY}/${CI_CUSTOM_REGISTRY_PATH}/${CI_CUSTOM_IMAGE_NAME}"
