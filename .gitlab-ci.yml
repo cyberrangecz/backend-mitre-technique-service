@@ -6,9 +6,8 @@ unit_tests:
   image: python:3.8
   stage: unit_tests
   script:
-    - pip3 install pipenv
-    - pipenv sync --dev
-    - pipenv run tox
+    - pip3 install tox
+    - tox
   only:
     - branches
   except:
@@ -20,7 +19,7 @@ docker_image_push:
     CI_CUSTOM_IMAGE_NAME: kypo-mitre-technique-service
   stage: docker_image_push
   image:
-    name: gcr.io/kaniko-project/executor:v1.3.0-debug
+    name: gcr.io/kaniko-project/executor:debug
     entrypoint: [ "" ]
   script:
     - export CI_CUSTOM_REGISTRY_IMAGE="${CI_REGISTRY}/${CI_CUSTOM_REGISTRY_PATH}/${CI_CUSTOM_IMAGE_NAME}"
