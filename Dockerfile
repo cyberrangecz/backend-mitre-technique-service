@@ -3,12 +3,12 @@ FROM python:3.8-slim AS builder
 ARG KYPO_PYPI_DOWNLOAD_URL="https://localhost.lan/repository"
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV PIPENV_VENV_IN_PROJECT="enabled"
+ENV PIPENV_VENV_IN_PROJECT="true"
 ENV PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app
 
-RUN pip3 install pipenv
+RUN pip3 install pipenv==2022.4.21
 
 COPY Pipfile Pipfile.lock ./
 RUN pipenv sync
