@@ -37,7 +37,7 @@ class GetMatrixVisualisationView(APIView):
         return HttpResponse(template)
 
 
-class GetMitreTechniqueIndex(generics.ListAPIView):
+class GetMitreTechniqueIndexView(generics.ListAPIView):
     serializer_class = serializers.TechniqueSerializer
 
     def get(self, request, *args, **kwargs):
