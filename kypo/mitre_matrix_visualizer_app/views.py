@@ -45,6 +45,18 @@ class GetMitreTechniqueIndexView(generics.ListAPIView):
         Get index of mitre techniques containing their names and codes.
         """
         client = MitreClient()
-        (_, _, technique_index) = client.get_tactics_techniques_with_backup()
+        (_, _, technique_index) = client.get_tactics_techniques()
         serializer = self.serializer_class(technique_index, many=True)
         return Response({'techniques': serializer.data})
+
+
+class UpdateMatrixDataView(APIView):
+
+    def put(self, request, *args, **kwargs):
+        """
+        Update the MITRE ATT&CK matrix data in the cache
+        """
+        client = MitreClient()
+        update_message = client.update_matrix_data()
+        return Response({'message': update_message})
+

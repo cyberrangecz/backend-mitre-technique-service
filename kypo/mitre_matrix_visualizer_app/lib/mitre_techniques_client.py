@@ -9,7 +9,7 @@ from kypo.mitre_matrix_visualizer_app.lib.technique import Technique
 SOURCE_WEBSITE = "https://cti-taxii.mitre.org/stix/collections/"
 MATRIX_ID = "95ecc380-afe9-11e4-9b6c-751b66dd541e"
 MATRIX_NAME = "Enterprise ATT&CK"
-MITRE_CACHE_TIMEOUT = 86400
+MITRE_CACHE_TIMEOUT = 0  # No timeout - cache is updated manually
 
 
 class MitreClient:
@@ -79,31 +79,48 @@ class MitreClient:
         return all_techniques, technique_index
 
     def get_tactics_techniques(self) -> (list, list, list):
+        """
+        This method gets tactics, techniques and technique_index from cache. If the cache has not been updated yet, the
+        data is read from the local file.
+        """
         print("Gathering matrix content:")
         tactics = cache.get("mitre_tactics", None)
-        if not tactics:
-            tactics = self._get_matrix_tactics()
-            cache.set("mitre_tactics", tactics, MITRE_CACHE_TIMEOUT)
-
         techniques = cache.get("mitre_techniques", None)
         technique_index = cache.get("technique_index", None)
-        if not techniques:
-            (techniques, technique_index) = self._get_matrix_techniques(tactics)
+
+        if not tactics:
+            with open(settings.KYPO_CONFIG.file_storage_location+"mitre_attack_backup_data",
+                      'rb') as backup:
+                (tactics, techniques, technique_index) = pickle.load(backup)
+            cache.set("mitre_tactics", tactics, MITRE_CACHE_TIMEOUT)
             cache.set("mitre_techniques", techniques, MITRE_CACHE_TIMEOUT)
             cache.set("technique_index", technique_index, MITRE_CACHE_TIMEOUT)
 
         return tactics, techniques, technique_index
 
-    def get_tactics_techniques_with_backup(self) -> (list, list, list):
+    def update_matrix_data(self) -> str:
+        """
+        Method updates the tactics and techniques in cache. It attempts to retrieve the data from the official taxi
+        server. If unsuccessful, use locally stored file.
+        :return: Message stating whether the taxi server or local file was used.
+        """
         try:
-            (tactics, techniques, technique_index) = self.get_tactics_techniques()
-            with open(settings.KYPO_CONFIG.file_storage_location+"mitre_attack_backup_data",
-                      'wb') as backup:
-                pickle.dump((tactics, techniques, technique_index), backup)
+            print("Gathering matrix content:")
+            tactics = self._get_matrix_tactics()
+            (techniques, technique_index) = self._get_matrix_techniques(tactics)
+            message = "Tactics and techniques were updated successfully."
+            # The following code updates the locally stored file with the mitre data. Currently, it is not used for
+            # anything, but it may be useful in the future to update the file and replace it in the repository.
+            # with open(settings.KYPO_CONFIG.file_storage_location+"mitre_attack_backup_data",
+            #           'wb') as backup:
+            #     pickle.dump((tactics, techniques, technique_index), backup)
         except Exception as exc:
-            print(f"The method getting tactics and techniques failed with: {exc}\n"
-                  f"Falling back on locally stored MITRE data.")
+            message = f"The tactics and techniques update failed with: {exc}\n. "\
+                      f"Falling back on locally stored MITRE data."
             with open(settings.KYPO_CONFIG.file_storage_location+"mitre_attack_backup_data",
                       'rb') as backup:
                 (tactics, techniques, technique_index) = pickle.load(backup)
-        return tactics, techniques, technique_index
+        cache.set("mitre_tactics", tactics, MITRE_CACHE_TIMEOUT)
+        cache.set("mitre_techniques", techniques, MITRE_CACHE_TIMEOUT)
+        cache.set("technique_index", technique_index, MITRE_CACHE_TIMEOUT)
+        return message
