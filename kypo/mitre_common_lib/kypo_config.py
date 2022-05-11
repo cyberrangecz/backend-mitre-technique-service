@@ -6,6 +6,15 @@ SSL_CA_CERTIFICATE_VERIFY = '/etc/ssl/certs'
 JAVA_LINEAR_TRAINING_MITRE_ENDPOINT = 'http://127.0.0.1:8083/kypo-rest-training/api/v1/visualizations/training-definitions/mitre-techniques'
 JAVA_ADAPTIVE_TRAINING_MITRE_ENDPOINT = 'http://127.0.0.1:8082/kypo-adaptive-training/api/v1/visualizations/training-definitions/mitre-techniques'
 FILE_STORAGE_LOCATION = 'kypo/mitre_matrix_visualizer_app/templates/'
+REDIS_HOST = "localhost"
+REDIS_PORT = 6379
+REDIS_DB = 1
+
+
+class Redis(Object):
+    host = Attribute(type=str, default=REDIS_HOST)
+    port = Attribute(type=int, default=REDIS_PORT)
+    db = Attribute(type=int, default=REDIS_DB)
 
 
 class KypoConfiguration(Object):
@@ -15,6 +24,7 @@ class KypoConfiguration(Object):
     java_adaptive_training_mitre_endpoint = Attribute(type=str,
                                                       default=JAVA_ADAPTIVE_TRAINING_MITRE_ENDPOINT)
     file_storage_location = Attribute(type=str, default=FILE_STORAGE_LOCATION)
+    redis = Attribute(type=Redis, default=())
 
     def __init__(self, **kwargs):
         for key, val in kwargs.items():

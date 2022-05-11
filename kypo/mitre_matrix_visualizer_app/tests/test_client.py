@@ -65,10 +65,10 @@ class TestClient:
         assert technique_index[2].name == 'a' and technique_index[2].code == 'codeB.code2'
         assert technique_index[3].name == 'b' and technique_index[3].code == 'codeB.code1'
 
-    def test_get_tactics_techniques(self, mocker, mitre_client):
+    def test_update_matrix_data(self, mocker, mitre_client):
         mitre_client._get_matrix_tactics = mocker.MagicMock()
         mitre_client._get_matrix_tactics.return_value = 'a'
         mitre_client._get_matrix_techniques = mocker.MagicMock()
         mitre_client._get_matrix_techniques.return_value = 'b', 'c'
 
-        assert mitre_client.get_tactics_techniques() == ('a', 'b', 'c')
+        assert mitre_client.update_matrix_data() == "Tactics and techniques were updated successfully."
