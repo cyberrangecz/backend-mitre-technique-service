@@ -9,7 +9,7 @@ from kypo.mitre_matrix_visualizer_app.lib.technique import Technique
 SOURCE_WEBSITE = "https://cti-taxii.mitre.org/stix/collections/"
 MATRIX_ID = "95ecc380-afe9-11e4-9b6c-751b66dd541e"
 MATRIX_NAME = "Enterprise ATT&CK"
-MITRE_CACHE_TIMEOUT = 0  # No timeout - cache is updated manually
+MITRE_CACHE_TIMEOUT = None  # No timeout - cache is updated manually
 
 
 class MitreClient:
@@ -89,6 +89,7 @@ class MitreClient:
         technique_index = cache.get("technique_index", None)
 
         if not tactics:
+            print("TACTICS NOT FOUND, reading from file")
             with open(settings.KYPO_CONFIG.file_storage_location+"mitre_attack_backup_data",
                       'rb') as backup:
                 (tactics, techniques, technique_index) = pickle.load(backup)
