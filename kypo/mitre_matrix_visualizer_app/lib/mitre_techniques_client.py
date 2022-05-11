@@ -89,7 +89,6 @@ class MitreClient:
         technique_index = cache.get("technique_index", None)
 
         if not tactics:
-            print("TACTICS NOT FOUND, reading from file")
             with open(settings.KYPO_CONFIG.file_storage_location+"mitre_attack_backup_data",
                       'rb') as backup:
                 (tactics, techniques, technique_index) = pickle.load(backup)
