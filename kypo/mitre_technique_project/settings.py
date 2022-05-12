@@ -136,3 +136,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSIONS_CLASSES': [],
     'UNAUTHENTICATED_USER': None,
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': f'redis://{KYPO_CONFIG.redis.host}:{KYPO_CONFIG.redis.port}',
+    }
+}
