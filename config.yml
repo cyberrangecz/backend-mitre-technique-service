@@ -1,5 +1,5 @@
 # Name of the microservice.
-#microservice_name: kypo-mitre-technique-service
+#microservice_name: mitre-technique-service
 
 # A boolean that turns on/off debug mode.
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -20,13 +20,13 @@ application_configuration:
     ssl_ca_certificate_verify: ""
 
     # An address of java linear training endpoint
-    #java_linear_training_mitre_endpoint: "http://127.0.0.1:8083/kypo-rest-training/api/v1/visualizations/training-definitions/mitre-techniques"
+    #java_linear_training_mitre_endpoint: "http://127.0.0.1:8083/training/api/v1/visualizations/training-definitions/mitre-techniques"
 
     # An address of java adaptive training endpoint
-    #java_adaptive_training_mitre_endpoint: "http://127.0.0.1:8082/kypo-adaptive-training/api/v1/visualizations/training-definitions/mitre-techniques"
+    #java_adaptive_training_mitre_endpoint: "http://127.0.0.1:8082/adaptive-training/api/v1/visualizations/training-definitions/mitre-techniques"
 
     # The location of jinja template and the locally stored MITRE data
-    #file_storage_location: "kypo/mitre_matrix_visualizer_app/templates/"
+    #file_storage_location: "crczp/mitre_matrix_visualizer_app/templates/"
 
     # Django redis to set up cache.
     redis:

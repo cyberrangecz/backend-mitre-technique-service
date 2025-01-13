@@ -2,14 +2,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
 
-from kypo.mitre_matrix_visualizer_app import serializers
-from kypo.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import MitreMatrixGenerator, MitreClient
-from kypo.mitre_common_lib.exceptions import AuthenticationTokenMissing
+from crczp.mitre_matrix_visualizer_app import serializers
+from crczp.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import MitreMatrixGenerator, MitreClient
+from crczp.mitre_common_lib.exceptions import AuthenticationTokenMissing
 from django.http import HttpResponse
 from drf_yasg2 import openapi
 from drf_yasg2.utils import swagger_auto_schema
 
-from kypo.mitre_matrix_visualizer_app.lib.technique import Technique
+from crczp.mitre_matrix_visualizer_app.lib.technique import Technique
 
 
 class GetMatrixVisualisationView(APIView):

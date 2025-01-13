@@ -3,16 +3,16 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import exception_handler
 
-from kypo.mitre_common_lib.exceptions import ApiException
+from crczp.mitre_common_lib.exceptions import ApiException
 
 # Create logger
 LOG = structlog.get_logger()
 
 def custom_exception_handler(exc, context):
-    """Handle KYPO exceptions in a special way."""
+    """Handle CyberRangeCZ Platform exceptions in a special way."""
 
     if isinstance(exc, ApiException):
-        response = handle_kypo_exception(exc, context)
+        response = handle_crczp_exception(exc, context)
     else:
         # Call REST framework's default exception handler, to get the standard error response.
         # Handles only Django Errors.
@@ -27,7 +27,7 @@ def custom_exception_handler(exc, context):
     return response
 
 
-def handle_kypo_exception(exc, context):
+def handle_crczp_exception(exc, context):
     """Handle this project exceptions."""
     return Response({
         'detail': str(exc),

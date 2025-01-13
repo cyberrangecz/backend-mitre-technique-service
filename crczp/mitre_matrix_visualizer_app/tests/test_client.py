@@ -1,7 +1,7 @@
-from kypo.mitre_matrix_visualizer_app.lib.mitre_techniques_client import MitreClient
+from crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client import MitreClient
 import pytest
 
-from kypo.mitre_matrix_visualizer_app.lib.technique import Technique
+from crczp.mitre_matrix_visualizer_app.lib.technique import Technique
 
 
 class TestClient:

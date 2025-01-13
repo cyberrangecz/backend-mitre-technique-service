@@ -1,4 +1,4 @@
-from kypo.mitre_matrix_visualizer_app.lib.mitre_techniques_client import MitreClient
+from crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client import MitreClient
 from jinja2 import Template
 from collections import defaultdict
 from django.conf import settings
@@ -36,13 +36,13 @@ class MitreMatrixGenerator:
         headers = TEMPLATE_HEADERS
         headers['Authorization'] = auth_bearer_token
 
-        data_linear = requests.get(settings.KYPO_CONFIG.java_linear_training_mitre_endpoint,
+        data_linear = requests.get(settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint,
                                    headers=headers).json()
         titles_linear = [training_definition.get("title") + " ("
                          + str(training_definition.get("id")) + ")" for training_definition
                          in data_linear if not played or training_definition.get("played")]
 
-        data_adaptive = requests.get(settings.KYPO_CONFIG.java_adaptive_training_mitre_endpoint,
+        data_adaptive = requests.get(settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint,
                                      headers=headers).json()
         titles_adaptive = [training_definition.get("title") + " (" +
                            str(training_definition.get("id")) + ")" for training_definition
@@ -53,7 +53,7 @@ class MitreMatrixGenerator:
                                in data if not played or training_definition.get("played")]
         training_technique_dict = self._generate_comparison_techniques(training_techniques)
 
-        with open(settings.KYPO_CONFIG.file_storage_location + "template.jinja2", "r") as file:
+        with open(settings.CRCZP_CONFIG.file_storage_location + "template.jinja2", "r") as file:
             template = Template(file.read())
 
         print("MITRE matrix was generated")

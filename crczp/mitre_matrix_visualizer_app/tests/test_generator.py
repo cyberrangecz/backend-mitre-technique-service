@@ -1,4 +1,4 @@
-from kypo.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import MitreMatrixGenerator, \
+from crczp.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import MitreMatrixGenerator, \
     TEMPLATE_HEADERS
 from django.conf import settings
 from collections import defaultdict
@@ -29,7 +29,7 @@ class TestGenerator:
     @pytest.fixture
     def setup_generate_matrix_all(self, mocker):
         mock_get_tactics_techniques = mocker.patch(
-            'kypo.mitre_matrix_visualizer_app.lib.mitre_techniques_client.MitreClient.get_tactics_techniques')
+            'crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client.MitreClient.get_tactics_techniques')
         mock_get_tactics_techniques.return_value = ('a', 'b', 'c')
         mock_template = mocker.MagicMock()
         mock_template.render.return_value = 'r'
@@ -41,7 +41,7 @@ class TestGenerator:
         mock_request = mocker.patch('requests.get')
         mock_request.return_value = mock_request_result
         mock_generate_comparison_techniques = mocker.patch(
-            'kypo.mitre_matrix_visualizer_app.lib.mitre_matrix_generator.MitreMatrixGenerator._generate_comparison_techniques')
+            'crczp.mitre_matrix_visualizer_app.lib.mitre_matrix_generator.MitreMatrixGenerator._generate_comparison_techniques')
         mock_generate_comparison_techniques.return_value = 'd'
         return mock_template, mock_generate_comparison_techniques, mock_request
 
@@ -50,9 +50,9 @@ class TestGenerator:
 
         assert mitre_generator.generate_matrix("token", False) == 'r'
 
-        mock_request.assert_any_call(settings.KYPO_CONFIG.java_linear_training_mitre_endpoint,
+        mock_request.assert_any_call(settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint,
                                      headers=self.headers)
-        mock_request.assert_called_with(settings.KYPO_CONFIG.java_adaptive_training_mitre_endpoint,
+        mock_request.assert_called_with(settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint,
                                         headers=self.headers)
 
         mock_generate_comparison_techniques.assert_called_with([[1, 2], [], [3], [1, 2], [], [3]])
@@ -66,9 +66,9 @@ class TestGenerator:
 
         assert mitre_generator.generate_matrix("token", True) == 'r'
 
-        mock_request.assert_any_call(settings.KYPO_CONFIG.java_linear_training_mitre_endpoint,
+        mock_request.assert_any_call(settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint,
                                      headers=self.headers)
-        mock_request.assert_called_with(settings.KYPO_CONFIG.java_adaptive_training_mitre_endpoint,
+        mock_request.assert_called_with(settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint,
                                         headers=self.headers)
 
         mock_generate_comparison_techniques.assert_called_with([[], [3], [], [3]])
