@@ -1,4 +1,4 @@
-from taxii2client.v20 import Collection
+from taxii2client.v21 import Collection
 from stix2 import TAXIICollectionSource, Filter
 from django.core.cache import cache
 from django.conf import settings
@@ -6,8 +6,8 @@ import pickle
 
 from kypo.mitre_matrix_visualizer_app.lib.technique import Technique
 
-SOURCE_WEBSITE = "https://cti-taxii.mitre.org/stix/collections/"
-MATRIX_ID = "95ecc380-afe9-11e4-9b6c-751b66dd541e"
+SOURCE_WEBSITE = "https://attack-taxii.mitre.org/api/v21/collections/"
+MATRIX_ID = "x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019"
 MATRIX_NAME = "Enterprise ATT&CK"
 MITRE_CACHE_TIMEOUT = None  # No timeout - cache is updated manually
 
