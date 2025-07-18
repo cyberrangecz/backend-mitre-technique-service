@@ -1,5 +1,6 @@
 name: Mitre CI
-
+permissions:
+  contents: read
 
 on:
   push:
@@ -45,6 +46,9 @@ jobs:
           tox
 
   build:
+    permissions:
+      contents: read
+      packages: write
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-24.04
     needs: [get_current_version, codeQuality]
@@ -75,8 +79,6 @@ jobs:
           tags: ghcr.io/${{ github.repository }}/sandbox-service:${{ env.TAG }}
 
   generate_docs:
-    permissions:
-      contents: read
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
     needs: build
@@ -92,7 +94,7 @@ jobs:
 
       - name: Generate and Push Swagger Docs
         run: |
-          cp config.yml-template ./config.yml
+          cp config.yml ./config.yml
           mkdir output
           uv sync
           uv run python manage.py spectacular --file output/mitre-technique-service-swagger-open-api.yaml
@@ -106,9 +108,7 @@ jobs:
   upload_docs:
     needs: generate_docs
     permissions:
-      contents: read
       pages: write
-      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -128,6 +128,9 @@ jobs:
 
   # Push tag only from manual workflow_dispatch with confirmed tag creation
   push_tag:
+    permissions:
+      contents: read
+      pull-requests: write
     if: github.ref == 'refs/heads/master' && github.event.inputs.confirm_action == 'yes'
     needs: [get_current_version, control_tag, build]
     uses: cyberrangecz/actions-templates/.github/workflows/tag_push_template.yml@master
