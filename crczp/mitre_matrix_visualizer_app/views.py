@@ -6,21 +6,27 @@ from crczp.mitre_matrix_visualizer_app import serializers
 from crczp.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import MitreMatrixGenerator, MitreClient
 from crczp.mitre_common_lib.exceptions import AuthenticationTokenMissing
 from django.http import HttpResponse
-from drf_yasg2 import openapi
-from drf_yasg2.utils import swagger_auto_schema
-
-from crczp.mitre_matrix_visualizer_app.lib.technique import Technique
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 
 
 class GetMatrixVisualisationView(APIView):
 
-    @swagger_auto_schema(manual_parameters=[
-                             openapi.Parameter('played', openapi.IN_QUERY,
-                                               description="Only training definitions marked as "
-                                                           "played will be added to the "
-                                                           "visualization.",
-                                               type=openapi.TYPE_BOOLEAN, default=False),
-                         ])
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name='played',
+                type=bool,
+                location=OpenApiParameter.QUERY,
+                description=(
+                    "Only training definitions marked as played will be "
+                    "added to the visualization."
+                ),
+                required=False
+            )
+        ],
+        responses={200: None},  # Adjust if you have a specific response schema
+        description="Get matrix of MITRE ATT&CK tactics and techniques related to game definitions."
+    )
     def get(self, request, *args, **kwargs):
         """
         Get matrix of MITRE ATT&CK tactics and techniques related to game definitions.
@@ -51,6 +57,7 @@ class GetMitreTechniqueIndexView(generics.ListAPIView):
 
 
 class UpdateMatrixDataView(APIView):
+    serializer_class = serializers.UpdateMatrixDataResponseSerializer
 
     def put(self, request, *args, **kwargs):
         """
@@ -59,4 +66,3 @@ class UpdateMatrixDataView(APIView):
         client = MitreClient()
         update_message = client.update_matrix_data()
         return Response({'message': update_message})
-

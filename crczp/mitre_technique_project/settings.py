@@ -28,6 +28,10 @@ os.environ['REQUESTS_CA_BUNDLE'] = CRCZP_CONFIG.ssl_ca_certificate_verify
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '&#syipmic=iv3t)gx!a@0vjmx2lx(8l_(1(q#f*o_z%zdl69xv'
 
+# API
+VERSION = 'v1'
+URL_PREFIX = f'{CRCZP_SERVICE_CONFIG.microservice_name}/api/{VERSION}/'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = CRCZP_SERVICE_CONFIG.debug
 
@@ -46,7 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'drf_yasg2',
+    'drf_spectacular',
     'corsheaders',
     'rest_framework',
 
@@ -135,6 +139,23 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [],
     'DEFAULT_PERMISSIONS_CLASSES': [],
     'UNAUTHENTICATED_USER': None,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'CyberRangeCZ Platform Mitre technique service REST API documentation',
+    'VERSION': VERSION,
+    'CONTACT': {
+        'url': 'https://github.com/cyberrangecz/backend-mitre-technique-service',
+    },
+    'LICENSE': {
+        'name': 'MIT',
+    },
+    'SERVERS': [
+        {'url': f'http://localhost:8001/{URL_PREFIX}', 'description': 'API'},
+    ],
+    # Optional tweaks
+    'SERVE_INCLUDE_SCHEMA': False,  # hides schema from Swagger if needed
 }
 
 CACHES = {

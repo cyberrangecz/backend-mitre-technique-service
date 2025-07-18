@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'drf_yasg2',
+    'drf_spectacular',
     'rest_framework',
 
     'crczp.mitre_matrix_visualizer_app.apps.MitreMatrixVisualizerAppConfig',
@@ -133,4 +133,5 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [],
     'DEFAULT_PERMISSIONS_CLASSES': [],
     'UNAUTHENTICATED_USER': None,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
