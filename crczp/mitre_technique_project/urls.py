@@ -1,33 +1,23 @@
 from django.contrib import admin
-from django.urls import path, re_path, include
+from django.urls import path, include
 from django.conf import settings
 
-from drf_yasg2.views import get_schema_view
-from drf_yasg2 import openapi
 from rest_framework import permissions
 
-VERSION = 'v1'
-URL_PREFIX = f'{settings.CRCZP_SERVICE_CONFIG.microservice_name}/api/{VERSION}/'
-
-schema_view = get_schema_view(
-    openapi.Info(
-        title="CRCZP mitre technique REST API documentation",
-        default_version=VERSION,
-        description="",
-    ),
-    public=True,
-    permission_classes=(permissions.AllowAny,),
-)
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 urlpatterns = [
-    path('admin', admin.site.urls),
+    path('admin', admin.site.urls, name='admin'),
 
-    path('doc', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    re_path(r'^doc(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0),
-            name='schema-json'),
+    # OpenAPI schema JSON
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+
+    # Swagger UI
+    path('doc/', SpectacularSwaggerView.as_view(url_name='schema'), name='schema-swagger-ui'),
+
     path('', include('crczp.mitre_matrix_visualizer_app.urls')),
 ]
 
 urlpatterns = [
-    path(URL_PREFIX, include(urlpatterns)),
+    path(settings.URL_PREFIX, include(urlpatterns)),
 ]
