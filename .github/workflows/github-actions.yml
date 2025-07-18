@@ -94,7 +94,6 @@ jobs:
 
       - name: Generate and Push Swagger Docs
         run: |
-          cp config.yml ./config.yml
           mkdir output
           uv sync
           uv run python manage.py spectacular --file output/mitre-technique-service-swagger-open-api.yaml
