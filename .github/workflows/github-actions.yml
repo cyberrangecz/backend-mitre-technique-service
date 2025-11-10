@@ -129,7 +129,7 @@ jobs:
   # Push tag only from manual workflow_dispatch with confirmed tag creation
   push_tag:
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
     if: github.ref == 'refs/heads/master' && github.event.inputs.confirm_action == 'yes'
     needs: [get_current_version, control_tag, build]
