@@ -21,6 +21,7 @@ ENV LISTEN_PORT=8001
 ENV GUNICORN_WORKER_TIMEOUT=60
 
 COPY crczp crczp
+COPY bin bin
 COPY config.yml manage.py ./
 COPY --from=builder /app/.venv ./.venv
 
