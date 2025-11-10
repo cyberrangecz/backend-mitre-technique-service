@@ -76,7 +76,7 @@ jobs:
           context: .  # Path to the Dockerfile
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}/sandbox-service:${{ env.TAG }}
+          tags: ghcr.io/${{ github.repository }}/mitre-technique-service:${{ env.TAG }}
 
   generate_docs:
     if: github.ref == 'refs/heads/master'
