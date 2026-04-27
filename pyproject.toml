@@ -1,6 +1,6 @@
 [project]
 name = "mitre-technique-service"
-version = "1.1.0"
+version = "1.1.1"
 description = "simplifies manipulation of OpenStack cloud platform for CyberRangeCZ Platform purposes"
 readme = "README.md"
 license = "MIT"
@@ -17,14 +17,6 @@ dependencies = [
     "django-cors-headers",
     "gunicorn",
     "drf-spectacular"
-]
-
-[project.optional-dependencies]
-dev = [
-    "tox",
-    "pytest",
-    "pytest-mock",
-    "pytest-django"
 ]
 
 [project.urls]
@@ -44,7 +36,7 @@ exclude-packages = [
 ]
 
 [tool.ruff]
-line-length = 127
+line-length = 100
 preview = true
 
 [tool.ruff.lint]
@@ -65,14 +57,16 @@ select = [
 
 [tool.ruff.format]
 quote-style = "single"
-indent-style = "tab"
+indent-style = "space"
 docstring-code-format = true
 
 [tool.mypy]
 check_untyped_defs = true
 ignore_missing_imports = true
 strict = true
+pretty = true
 enable_error_code = ["deprecated", "explicit-override"]
+explicit_package_bases = true
 
 [tool.pylint]
 # You can add pylint configs here or in .pylintrc
