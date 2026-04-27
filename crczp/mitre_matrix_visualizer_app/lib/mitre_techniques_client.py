@@ -1,5 +1,6 @@
 """Client for fetching and caching MITRE ATT&CK tactics and techniques via TAXII2/STIX2."""
 
+import logging
 import pickle  # nosec B403 - data is written by this service from trusted MITRE sources
 from typing import Any
 
@@ -14,6 +15,8 @@ SOURCE_WEBSITE = 'https://attack-taxii.mitre.org/api/v21/collections/'
 MATRIX_ID = 'x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019'
 MATRIX_NAME = 'Enterprise ATT&CK'
 MITRE_CACHE_TIMEOUT = None  # No timeout - cache is updated manually
+
+LOG = logging.getLogger(__name__)
 
 
 class MitreClient:
@@ -128,9 +131,10 @@ class MitreClient:
             #           'wb') as backup:
             #     pickle.dump((tactics, techniques, technique_index), backup)
         except Exception as exc:  # pylint: disable=broad-exception-caught
+            LOG.error('Matrix update failed: %s', exc, exc_info=True)
             message = (
-                f'The tactics and techniques update failed with: {exc}\n. '
-                f'Falling back on locally stored MITRE data.'
+                'The tactics and techniques update failed. '
+                'Falling back on locally stored MITRE data.'
             )
             with open(
                 settings.CRCZP_CONFIG.file_storage_location + 'mitre_attack_backup_data', 'rb'

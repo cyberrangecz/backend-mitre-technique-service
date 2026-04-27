@@ -11,8 +11,11 @@ class TestClient:  # pylint: disable=protected-access
     """Tests for MitreClient tactic and technique retrieval."""
 
     @pytest.fixture  # type: ignore[untyped-decorator]
-    def mitre_client(self) -> MitreClient:
+    def mitre_client(self, mocker: Any) -> MitreClient:
         """Return a fresh MitreClient instance."""
+        mocker.patch(
+            'crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client.TAXIICollectionSource'
+        )
         return MitreClient()
 
     def test_client_get_matrix_tactics(self, mocker: Any, mitre_client: MitreClient) -> None:
@@ -35,7 +38,6 @@ class TestClient:  # pylint: disable=protected-access
 
     def test_remove_revoked_deprecated(self, mitre_client: MitreClient) -> None:
         """Test that _remove_revoked_deprecated filters out revoked and deprecated techniques."""
-        mitre_client = MitreClient()
         filtered = mitre_client._remove_revoked_deprecated([
             {'name': 'a', 'x_mitre_deprecated': True},
             {'name': 'b', 'revoked': True},

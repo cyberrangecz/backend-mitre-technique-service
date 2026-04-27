@@ -55,7 +55,7 @@ class GetMitreTechniqueIndexView(generics.ListAPIView):  # type: ignore[misc]
 
     serializer_class = serializers.TechniqueSerializer
 
-    def get(self, request: Any, *args: Any, **kwargs: Any) -> Response:
+    def get(self, _request: Any, *_args: Any, **_kwargs: Any) -> Response:
         """
         Get index of mitre techniques containing their names and codes.
         """

@@ -20,8 +20,7 @@ class TestGenerator:  # pylint: disable=protected-access
         {'title': 'b2', 'id': '2', 'played': True, 'mitre_techniques': []},
         {'title': 'b3', 'id': '3', 'played': True, 'mitre_techniques': [3]},
     ]
-    headers = TEMPLATE_HEADERS
-    headers['Authorization'] = 'token'
+    headers = {**TEMPLATE_HEADERS, 'Authorization': 'token'}
 
     @pytest.fixture  # type: ignore[untyped-decorator]
     def mitre_generator(self) -> MitreMatrixGenerator:
@@ -29,7 +28,7 @@ class TestGenerator:  # pylint: disable=protected-access
         return MitreMatrixGenerator()
 
     def test_generator_generate_comparison_techniques(
-        self, _mocker: Any, mitre_generator: MitreMatrixGenerator
+        self, mitre_generator: MitreMatrixGenerator
     ) -> None:
         """Test that _generate_comparison_techniques builds the correct nested defaultdict."""
         techniques = [['1.1', '1.2.1'], [], ['3.1']]
@@ -44,6 +43,9 @@ class TestGenerator:  # pylint: disable=protected-access
     @pytest.fixture  # type: ignore[untyped-decorator]
     def setup_generate_matrix_all(self, mocker: Any) -> Any:
         """Patch external dependencies for generate_matrix tests."""
+        mocker.patch(
+            'crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client.TAXIICollectionSource'
+        )
         mock_get_tactics_techniques = mocker.patch(
             'crczp.mitre_matrix_visualizer_app.lib'
             '.mitre_techniques_client.MitreClient.get_tactics_techniques'
@@ -74,10 +76,14 @@ class TestGenerator:  # pylint: disable=protected-access
         assert mitre_generator.generate_matrix('token', False) == 'r'
 
         mock_request.assert_any_call(
-            settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint, headers=self.headers
+            settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint,
+            headers=self.headers,
+            timeout=30,
         )
         mock_request.assert_called_with(
-            settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint, headers=self.headers
+            settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint,
+            headers=self.headers,
+            timeout=30,
         )
 
         mock_generate_comparison_techniques.assert_called_with([[1, 2], [], [3], [1, 2], [], [3]])
@@ -99,10 +105,14 @@ class TestGenerator:  # pylint: disable=protected-access
         assert mitre_generator.generate_matrix('token', True) == 'r'
 
         mock_request.assert_any_call(
-            settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint, headers=self.headers
+            settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint,
+            headers=self.headers,
+            timeout=30,
         )
         mock_request.assert_called_with(
-            settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint, headers=self.headers
+            settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint,
+            headers=self.headers,
+            timeout=30,
         )
 
         mock_generate_comparison_techniques.assert_called_with([[], [3], [], [3]])

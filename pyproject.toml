@@ -81,3 +81,6 @@ testpaths = [
     "crczp/mitre_matrix_visualizer_app/tests",
     "crczp/mitre_technique_project/tests",
 ]
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+]

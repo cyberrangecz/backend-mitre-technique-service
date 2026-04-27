@@ -11,9 +11,14 @@ urlpatterns = [
         name='mitre matrix visualisation',
     ),
     path(
-        'mitre-technqiue-index',
+        'mitre-technique-index',
         views.GetMitreTechniqueIndexView.as_view(),
         name='mitre technique index',
+    ),
+    path(
+        'mitre-technqiue-index',
+        views.GetMitreTechniqueIndexView.as_view(),
+        name='mitre technique index legacy',
     ),
     path(
         'mitre-update-matrix-data',

@@ -42,7 +42,7 @@ class MitreMatrixGenerator:  # pylint: disable=too-few-public-methods
         tactics, techniques, _ = MitreClient().get_tactics_techniques()
 
         print('Generating MITRE matrix...')
-        headers = TEMPLATE_HEADERS
+        headers = TEMPLATE_HEADERS.copy()
         headers['Authorization'] = auth_bearer_token
 
         data_linear = requests.get(
