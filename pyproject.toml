@@ -12,6 +12,7 @@ dependencies = [
     "structlog",
     "stix2",
     "yamlize",
+    "ruamel.yaml<0.18",
     "redis",
     "jinja2",
     "django-cors-headers",
@@ -80,7 +81,4 @@ addopts = "-ra -q"
 testpaths = [
     "crczp/mitre_matrix_visualizer_app/tests",
     "crczp/mitre_technique_project/tests",
-]
-markers = [
-    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
 ]
