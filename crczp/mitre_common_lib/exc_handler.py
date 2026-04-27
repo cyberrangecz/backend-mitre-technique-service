@@ -1,3 +1,5 @@
+"""Custom DRF exception handler that converts CRCZP exceptions to structured HTTP responses."""
+
 from typing import Any
 
 import structlog
@@ -33,7 +35,7 @@ def custom_exception_handler(exc: Exception, context: Any) -> Response | None:
     return response
 
 
-def handle_crczp_exception(exc: ApiException, context: Any) -> Response:
+def handle_crczp_exception(exc: ApiException, _context: Any) -> Response:
     """Handle this project exceptions."""
     return Response(
         {

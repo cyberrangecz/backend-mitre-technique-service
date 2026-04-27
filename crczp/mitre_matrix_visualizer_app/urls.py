@@ -1,3 +1,5 @@
+"""URL routing for the MITRE matrix visualiser application."""
+
 from django.urls import path
 
 from crczp.mitre_matrix_visualizer_app import views

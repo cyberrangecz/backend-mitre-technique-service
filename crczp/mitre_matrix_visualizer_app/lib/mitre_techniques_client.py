@@ -1,3 +1,5 @@
+"""Client for fetching and caching MITRE ATT&CK tactics and techniques via TAXII2/STIX2."""
+
 import pickle
 from typing import Any
 
@@ -15,6 +17,8 @@ MITRE_CACHE_TIMEOUT = None  # No timeout - cache is updated manually
 
 
 class MitreClient:
+    """Retrieves MITRE ATT&CK tactics and techniques from the TAXII2 server or a local cache."""
+
     def __init__(self) -> None:
         collection = Collection(SOURCE_WEBSITE + MATRIX_ID)
         self.source = TAXIICollectionSource(collection)
@@ -96,7 +100,8 @@ class MitreClient:
 
         if not tactics:
             with open(
-                settings.CRCZP_CONFIG.file_storage_location + 'mitre_attack_backup_data', 'rb'
+                settings.CRCZP_CONFIG.file_storage_location + 'mitre_attack_backup_data',
+                'rb',
             ) as backup:
                 (tactics, techniques, technique_index) = pickle.load(backup)
             cache.set('mitre_tactics', tactics, MITRE_CACHE_TIMEOUT)
@@ -122,7 +127,7 @@ class MitreClient:
             # with open(settings.CRCZP_CONFIG.file_storage_location+"mitre_attack_backup_data",
             #           'wb') as backup:
             #     pickle.dump((tactics, techniques, technique_index), backup)
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught
             message = (
                 f'The tactics and techniques update failed with: {exc}\n. '
                 f'Falling back on locally stored MITRE data.'

@@ -1,3 +1,5 @@
+"""Generates the MITRE ATT&CK HTML matrix from live training data and a Jinja2 template."""
+
 from collections import defaultdict
 from typing import Any
 
@@ -10,7 +12,9 @@ from crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client import MitreC
 TEMPLATE_HEADERS = {'accept': 'application/json', 'Content-Type': 'application/json'}
 
 
-class MitreMatrixGenerator:
+class MitreMatrixGenerator:  # pylint: disable=too-few-public-methods
+    """Builds an ATT&CK matrix HTML page from training definitions and MITRE TAXII data."""
+
     @staticmethod
     def _generate_comparison_techniques(
         training_techniques: list[Any],
@@ -21,7 +25,7 @@ class MitreMatrixGenerator:
         technique.
         """
         techniques: defaultdict[str, defaultdict[str, set[int]]] = defaultdict(
-            lambda: defaultdict(lambda: set())
+            lambda: defaultdict(set)
         )
 
         for level_index, level_techniques in enumerate(training_techniques):
@@ -34,6 +38,7 @@ class MitreMatrixGenerator:
 
     # noinspection PyMethodMayBeStatic
     def generate_matrix(self, auth_bearer_token: str, played: bool) -> str:
+        """Generate the MITRE ATT&CK HTML matrix for training definitions."""
         tactics, techniques, _ = MitreClient().get_tactics_techniques()
 
         print('Generating MITRE matrix...')
@@ -41,7 +46,7 @@ class MitreMatrixGenerator:
         headers['Authorization'] = auth_bearer_token
 
         data_linear = requests.get(
-            settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint, headers=headers
+            settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint, headers=headers, timeout=30
         ).json()
         titles_linear = [
             training_definition.get('title') + ' (' + str(training_definition.get('id')) + ')'
@@ -50,7 +55,7 @@ class MitreMatrixGenerator:
         ]
 
         data_adaptive = requests.get(
-            settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint, headers=headers
+            settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint, headers=headers, timeout=30
         ).json()
         titles_adaptive = [
             training_definition.get('title') + ' (' + str(training_definition.get('id')) + ')'
@@ -66,7 +71,9 @@ class MitreMatrixGenerator:
         ]
         training_technique_dict = self._generate_comparison_techniques(training_techniques)
 
-        with open(settings.CRCZP_CONFIG.file_storage_location + 'template.jinja2') as file:
+        with open(
+            settings.CRCZP_CONFIG.file_storage_location + 'template.jinja2', encoding='utf-8'
+        ) as file:
             template = Template(file.read())
 
         print('MITRE matrix was generated')

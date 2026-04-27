@@ -1,3 +1,5 @@
+"""CRCZP service-level configuration loaded from a YAML file via yamlize."""
+
 from typing import Any
 
 from yamlize import Attribute, Object, Sequence, StrList, Typed, YamlizingError
@@ -13,10 +15,14 @@ CORS_ORIGIN_WHITELIST: list[str] = []
 
 
 class AllowedOidcProviders(Sequence):  # type: ignore[misc]
+    """Sequence of allowed OIDC provider configurations."""
+
     item_type = Typed(dict)
 
 
 class CrczpServiceConfig(Object):  # type: ignore[misc]
+    """Service-level configuration combining network, CORS, and app settings."""
+
     microservice_name = Attribute(type=str, default=MICROSERVICE_NAME)
     debug = Attribute(type=bool, default=DEBUG)
     allowed_hosts = Attribute(type=StrList, default=tuple(ALLOWED_HOSTS))
@@ -41,5 +47,6 @@ class CrczpServiceConfig(Object):  # type: ignore[misc]
 
     @classmethod
     def from_file(cls, path: str) -> 'CrczpServiceConfig':
-        with open(path) as f:
+        """Load service configuration from a YAML file at the given path."""
+        with open(path, encoding='utf-8') as f:
             return cls.load(f)

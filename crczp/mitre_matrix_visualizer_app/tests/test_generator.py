@@ -1,3 +1,5 @@
+"""Unit tests for MitreMatrixGenerator HTML matrix generation."""
+
 from collections import defaultdict
 from typing import Any
 
@@ -10,7 +12,9 @@ from crczp.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import (
 )
 
 
-class TestGenerator:
+class TestGenerator:  # pylint: disable=protected-access
+    """Tests for MitreMatrixGenerator comparison technique building and matrix rendering."""
+
     training_definition_data = [
         {'title': 'a1', 'id': '1', 'played': False, 'mitre_techniques': [1, 2]},
         {'title': 'b2', 'id': '2', 'played': True, 'mitre_techniques': []},
@@ -21,14 +25,16 @@ class TestGenerator:
 
     @pytest.fixture  # type: ignore[untyped-decorator]
     def mitre_generator(self) -> MitreMatrixGenerator:
+        """Return a fresh MitreMatrixGenerator instance."""
         return MitreMatrixGenerator()
 
     def test_generator_generate_comparison_techniques(
-        self, mocker: Any, mitre_generator: MitreMatrixGenerator
+        self, _mocker: Any, mitre_generator: MitreMatrixGenerator
     ) -> None:
+        """Test that _generate_comparison_techniques builds the correct nested defaultdict."""
         techniques = [['1.1', '1.2.1'], [], ['3.1']]
         result_techniques: defaultdict[str, defaultdict[str, set[int]]] = defaultdict(
-            lambda: defaultdict(lambda: set())
+            lambda: defaultdict(set)
         )
         result_techniques['1']['1'].add(1)
         result_techniques['1']['2'].add(1)
@@ -37,8 +43,10 @@ class TestGenerator:
 
     @pytest.fixture  # type: ignore[untyped-decorator]
     def setup_generate_matrix_all(self, mocker: Any) -> Any:
+        """Patch external dependencies for generate_matrix tests."""
         mock_get_tactics_techniques = mocker.patch(
-            'crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client.MitreClient.get_tactics_techniques'
+            'crczp.mitre_matrix_visualizer_app.lib'
+            '.mitre_techniques_client.MitreClient.get_tactics_techniques'
         )
         mock_get_tactics_techniques.return_value = ('a', 'b', 'c')
         mock_template = mocker.MagicMock()
@@ -51,7 +59,8 @@ class TestGenerator:
         mock_request = mocker.patch('requests.get')
         mock_request.return_value = mock_request_result
         mock_generate_comparison_techniques = mocker.patch(
-            'crczp.mitre_matrix_visualizer_app.lib.mitre_matrix_generator.MitreMatrixGenerator._generate_comparison_techniques'
+            'crczp.mitre_matrix_visualizer_app.lib.mitre_matrix_generator'
+            '.MitreMatrixGenerator._generate_comparison_techniques'
         )
         mock_generate_comparison_techniques.return_value = 'd'
         return mock_template, mock_generate_comparison_techniques, mock_request
@@ -59,6 +68,7 @@ class TestGenerator:
     def test_generator_generate_matrix_all(
         self, setup_generate_matrix_all: Any, mitre_generator: MitreMatrixGenerator
     ) -> None:
+        """Test generate_matrix returns rendered template when played=False."""
         mock_template, mock_generate_comparison_techniques, mock_request = setup_generate_matrix_all
 
         assert mitre_generator.generate_matrix('token', False) == 'r'
@@ -83,6 +93,7 @@ class TestGenerator:
     def test_generator_generate_matrix_played(
         self, setup_generate_matrix_all: Any, mitre_generator: MitreMatrixGenerator
     ) -> None:
+        """Test generate_matrix filters training definitions by played=True."""
         mock_template, mock_generate_comparison_techniques, mock_request = setup_generate_matrix_all
 
         assert mitre_generator.generate_matrix('token', True) == 'r'

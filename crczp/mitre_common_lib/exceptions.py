@@ -10,20 +10,14 @@ class ApiException(Exception):
     All other exceptions inherit form it.
     """
 
-    pass
-
 
 class ImproperlyConfigured(ApiException):
     """
     Raised when application was not configured properly.
     """
 
-    pass
-
 
 class AuthenticationTokenMissing(ApiException):
     """
-    Raised when application was not configured properly.
+    Raised when the Authorization header is missing from the request.
     """
-
-    pass
