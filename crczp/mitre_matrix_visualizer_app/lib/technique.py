@@ -1,5 +1,7 @@
-class Technique:
+from dataclasses import dataclass
 
-    def __init__(self, code, name):
-        self.code = code
-        self.name = name
+
+@dataclass
+class Technique:
+    code: str
+    name: str

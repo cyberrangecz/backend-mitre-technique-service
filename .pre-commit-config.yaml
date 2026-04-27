@@ -20,4 +20,4 @@ repos:
       - id: mypy
         name: mypy
         args: [--ignore-missing-imports]
-        additional_dependencies: [types-PyYAML]
+        additional_dependencies: [types-PyYAML, types-requests]

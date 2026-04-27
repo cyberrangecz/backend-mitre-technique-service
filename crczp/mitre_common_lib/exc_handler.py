@@ -1,3 +1,5 @@
+from typing import Any
+
 import structlog
 from rest_framework import status
 from rest_framework.response import Response
@@ -8,7 +10,8 @@ from crczp.mitre_common_lib.exceptions import ApiException
 # Create logger
 LOG = structlog.get_logger()
 
-def custom_exception_handler(exc, context):
+
+def custom_exception_handler(exc: Exception, context: Any) -> Response | None:
     """Handle CyberRangeCZ Platform exceptions in a special way."""
 
     if isinstance(exc, ApiException):
@@ -19,16 +22,22 @@ def custom_exception_handler(exc, context):
         response = exception_handler(exc, context)
 
         if response is None:
-            response = Response({
-                'detail': str(exc),
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            response = Response(
+                {
+                    'detail': str(exc),
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
     LOG.error(repr(exc), data=response.data if response else None, exc_info=True)
     return response
 
 
-def handle_crczp_exception(exc, context):
+def handle_crczp_exception(exc: ApiException, context: Any) -> Response:
     """Handle this project exceptions."""
-    return Response({
-        'detail': str(exc),
-    }, status=status.HTTP_400_BAD_REQUEST)
+    return Response(
+        {
+            'detail': str(exc),
+        },
+        status=status.HTTP_400_BAD_REQUEST,
+    )

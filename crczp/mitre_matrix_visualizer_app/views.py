@@ -1,33 +1,36 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import generics
+from typing import Any
 
-from crczp.mitre_matrix_visualizer_app import serializers
-from crczp.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import MitreMatrixGenerator, MitreClient
-from crczp.mitre_common_lib.exceptions import AuthenticationTokenMissing
 from django.http import HttpResponse
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from crczp.mitre_common_lib.exceptions import AuthenticationTokenMissing
+from crczp.mitre_matrix_visualizer_app import serializers
+from crczp.mitre_matrix_visualizer_app.lib.mitre_matrix_generator import MitreMatrixGenerator
+from crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client import MitreClient
 
 
-class GetMatrixVisualisationView(APIView):
-
-    @extend_schema(
+class GetMatrixVisualisationView(APIView):  # type: ignore[misc]
+    @extend_schema(  # type: ignore[untyped-decorator]
         parameters=[
             OpenApiParameter(
                 name='played',
                 type=bool,
                 location=OpenApiParameter.QUERY,
                 description=(
-                    "Only training definitions marked as played will be "
-                    "added to the visualization."
+                    'Only training definitions marked as played will be added to the visualization.'
                 ),
-                required=False
+                required=False,
             )
         ],
         responses={200: None},  # Adjust if you have a specific response schema
-        description="Get matrix of MITRE ATT&CK tactics and techniques related to game definitions."
+        description=(
+            'Get matrix of MITRE ATT&CK tactics and techniques related to game definitions.'
+        ),
     )
-    def get(self, request, *args, **kwargs):
+    def get(self, request: Any, *args: Any, **kwargs: Any) -> HttpResponse:
         """
         Get matrix of MITRE ATT&CK tactics and techniques related to game definitions.
         """
@@ -36,17 +39,17 @@ class GetMatrixVisualisationView(APIView):
             if header[0] == 'HTTP_AUTHORIZATION':
                 auth_bearer_token = header[1]
         if not auth_bearer_token:
-            raise AuthenticationTokenMissing("Authentication token is missing from the header")
+            raise AuthenticationTokenMissing('Authentication token is missing from the header')
 
-        played = request.GET.get('played') == "true"
+        played = request.GET.get('played') == 'true'
         template = MitreMatrixGenerator().generate_matrix(auth_bearer_token, played)
         return HttpResponse(template)
 
 
-class GetMitreTechniqueIndexView(generics.ListAPIView):
+class GetMitreTechniqueIndexView(generics.ListAPIView):  # type: ignore[misc]
     serializer_class = serializers.TechniqueSerializer
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: Any, *args: Any, **kwargs: Any) -> Response:
         """
         Get index of mitre techniques containing their names and codes.
         """
@@ -56,10 +59,10 @@ class GetMitreTechniqueIndexView(generics.ListAPIView):
         return Response({'techniques': serializer.data})
 
 
-class UpdateMatrixDataView(APIView):
+class UpdateMatrixDataView(APIView):  # type: ignore[misc]
     serializer_class = serializers.UpdateMatrixDataResponseSerializer
 
-    def put(self, request, *args, **kwargs):
+    def put(self, request: Any, *args: Any, **kwargs: Any) -> Response:
         """
         Update the MITRE ATT&CK matrix data in the cache
         """

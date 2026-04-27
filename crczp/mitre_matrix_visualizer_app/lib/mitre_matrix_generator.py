@@ -1,24 +1,28 @@
-from crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client import MitreClient
-from jinja2 import Template
 from collections import defaultdict
-from django.conf import settings
-import requests
+from typing import Any
 
-TEMPLATE_HEADERS = {
-    'accept': 'application/json',
-    'Content-Type': 'application/json'
-}
+import requests
+from django.conf import settings
+from jinja2 import Template
+
+from crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client import MitreClient
+
+TEMPLATE_HEADERS = {'accept': 'application/json', 'Content-Type': 'application/json'}
 
 
 class MitreMatrixGenerator:
     @staticmethod
-    def _generate_comparison_techniques(training_techniques):
+    def _generate_comparison_techniques(
+        training_techniques: list[Any],
+    ) -> defaultdict[str, defaultdict[str, set[int]]]:
         """
-            Comparison dictionary of games. First layer key is tactic identifier, second layer key
-            is technique identifier. Final value is set of indices of games containing attack
-            technique.
+        Comparison dictionary of games. First layer key is tactic identifier, second layer key
+        is technique identifier. Final value is set of indices of games containing attack
+        technique.
         """
-        techniques = defaultdict(lambda: defaultdict(lambda: set()))
+        techniques: defaultdict[str, defaultdict[str, set[int]]] = defaultdict(
+            lambda: defaultdict(lambda: set())
+        )
 
         for level_index, level_techniques in enumerate(training_techniques):
             for technique in level_techniques:
@@ -29,34 +33,48 @@ class MitreMatrixGenerator:
         return techniques
 
     # noinspection PyMethodMayBeStatic
-    def generate_matrix(self, auth_bearer_token: str, played: bool):
+    def generate_matrix(self, auth_bearer_token: str, played: bool) -> str:
         tactics, techniques, _ = MitreClient().get_tactics_techniques()
 
-        print("Generating MITRE matrix...")
+        print('Generating MITRE matrix...')
         headers = TEMPLATE_HEADERS
         headers['Authorization'] = auth_bearer_token
 
-        data_linear = requests.get(settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint,
-                                   headers=headers).json()
-        titles_linear = [training_definition.get("title") + " ("
-                         + str(training_definition.get("id")) + ")" for training_definition
-                         in data_linear if not played or training_definition.get("played")]
+        data_linear = requests.get(
+            settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint, headers=headers
+        ).json()
+        titles_linear = [
+            training_definition.get('title') + ' (' + str(training_definition.get('id')) + ')'
+            for training_definition in data_linear
+            if not played or training_definition.get('played')
+        ]
 
-        data_adaptive = requests.get(settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint,
-                                     headers=headers).json()
-        titles_adaptive = [training_definition.get("title") + " (" +
-                           str(training_definition.get("id")) + ")" for training_definition
-                           in data_adaptive if not played or training_definition.get("played")]
+        data_adaptive = requests.get(
+            settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint, headers=headers
+        ).json()
+        titles_adaptive = [
+            training_definition.get('title') + ' (' + str(training_definition.get('id')) + ')'
+            for training_definition in data_adaptive
+            if not played or training_definition.get('played')
+        ]
 
         data = data_linear + data_adaptive
-        training_techniques = [training_definition.get("mitre_techniques") for training_definition
-                               in data if not played or training_definition.get("played")]
+        training_techniques = [
+            training_definition.get('mitre_techniques')
+            for training_definition in data
+            if not played or training_definition.get('played')
+        ]
         training_technique_dict = self._generate_comparison_techniques(training_techniques)
 
-        with open(settings.CRCZP_CONFIG.file_storage_location + "template.jinja2", "r") as file:
+        with open(settings.CRCZP_CONFIG.file_storage_location + 'template.jinja2') as file:
             template = Template(file.read())
 
-        print("MITRE matrix was generated")
-        return template.render(tactics=tactics, techniques=techniques,
-                               linear_game_names=titles_linear, adaptive_game_names=titles_adaptive,
-                               technique_dict=training_technique_dict, single_color=False)
+        print('MITRE matrix was generated')
+        return template.render(  # type: ignore[no-any-return]
+            tactics=tactics,
+            techniques=techniques,
+            linear_game_names=titles_linear,
+            adaptive_game_names=titles_adaptive,
+            technique_dict=training_technique_dict,
+            single_color=False,
+        )
