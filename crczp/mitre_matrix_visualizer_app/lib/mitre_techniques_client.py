@@ -1,6 +1,6 @@
 """Client for fetching and caching MITRE ATT&CK tactics and techniques via TAXII2/STIX2."""
 
-import pickle
+import pickle  # nosec B403 - data is written by this service from trusted MITRE sources
 from typing import Any
 
 from django.conf import settings
@@ -103,7 +103,7 @@ class MitreClient:
                 settings.CRCZP_CONFIG.file_storage_location + 'mitre_attack_backup_data',
                 'rb',
             ) as backup:
-                (tactics, techniques, technique_index) = pickle.load(backup)
+                (tactics, techniques, technique_index) = pickle.load(backup)  # nosec B301
             cache.set('mitre_tactics', tactics, MITRE_CACHE_TIMEOUT)
             cache.set('mitre_techniques', techniques, MITRE_CACHE_TIMEOUT)
             cache.set('technique_index', technique_index, MITRE_CACHE_TIMEOUT)
@@ -135,7 +135,7 @@ class MitreClient:
             with open(
                 settings.CRCZP_CONFIG.file_storage_location + 'mitre_attack_backup_data', 'rb'
             ) as backup:
-                (tactics, techniques, technique_index) = pickle.load(backup)
+                (tactics, techniques, technique_index) = pickle.load(backup)  # nosec B301
         cache.set('mitre_tactics', tactics, MITRE_CACHE_TIMEOUT)
         cache.set('mitre_techniques', techniques, MITRE_CACHE_TIMEOUT)
         cache.set('technique_index', technique_index, MITRE_CACHE_TIMEOUT)

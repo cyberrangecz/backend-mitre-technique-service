@@ -28,7 +28,9 @@ CRCZP_CONFIG = CRCZP_SERVICE_CONFIG.app_config
 os.environ['REQUESTS_CA_BUNDLE'] = CRCZP_CONFIG.ssl_ca_certificate_verify
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&#syipmic=iv3t)gx!a@0vjmx2lx(8l_(1(q#f*o_z%zdl69xv'
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY', '&#syipmic=iv3t)gx!a@0vjmx2lx(8l_(1(q#f*o_z%zdl69xv'
+)
 
 # API
 VERSION = 'v1'
