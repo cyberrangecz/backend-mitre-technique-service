@@ -30,6 +30,19 @@ jobs:
       LANG: C.UTF-8
       TERM: xterm-256color
       FORCE_COLOR: "1"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        env:
+          - pre-commit
+          - pylint
+          - bandit
+          - audit
+          - pytest
+
+    name: (${{ matrix.env }})
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -44,6 +57,10 @@ jobs:
         run: |
           uv tool install tox --with tox-uv
           tox
+
+      - name: Run tox (${{ matrix.env }})
+        run: |
+          tox -q -e ${{ matrix.env }}
 
   build:
     permissions:

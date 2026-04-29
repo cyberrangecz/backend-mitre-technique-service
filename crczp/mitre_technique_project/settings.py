@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from typing import Any
+
 from crczp.mitre_common_lib.crczp_service_config import CrczpServiceConfig
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -26,7 +28,9 @@ CRCZP_CONFIG = CRCZP_SERVICE_CONFIG.app_config
 os.environ['REQUESTS_CA_BUNDLE'] = CRCZP_CONFIG.ssl_ca_certificate_verify
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&#syipmic=iv3t)gx!a@0vjmx2lx(8l_(1(q#f*o_z%zdl69xv'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+if SECRET_KEY is None:
+    raise RuntimeError('DJANGO_SECRET_KEY environment variable must be set')
 
 # API
 VERSION = 'v1'
@@ -53,7 +57,6 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'corsheaders',
     'rest_framework',
-
     'crczp.mitre_matrix_visualizer_app.apps.MitreMatrixVisualizerAppConfig',
 ]
 
@@ -92,7 +95,7 @@ WSGI_APPLICATION = 'crczp.mitre_technique_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {}
+DATABASES: dict[str, Any] = {}
 
 
 # Password validation
@@ -134,7 +137,7 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = f'/{CRCZP_SERVICE_CONFIG.microservice_name}/static/'
 
-REST_FRAMEWORK = {
+REST_FRAMEWORK: dict[str, Any] = {
     'EXCEPTION_HANDLER': 'crczp.mitre_common_lib.exc_handler.custom_exception_handler',
     'DEFAULT_AUTHENTICATION_CLASSES': [],
     'DEFAULT_PERMISSIONS_CLASSES': [],
