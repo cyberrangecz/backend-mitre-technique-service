@@ -20,9 +20,9 @@ class MitreMatrixGenerator:  # pylint: disable=too-few-public-methods
         training_techniques: list[Any],
     ) -> defaultdict[str, defaultdict[str, set[int]]]:
         """
-        Comparison dictionary of games. First layer key is tactic identifier, second layer key
-        is technique identifier. Final value is set of indices of games containing attack
-        technique.
+        Comparison dictionary of training definitions. First layer key is tactic identifier,
+        second layer key is technique identifier. Final value is set of indices of training
+        definitions containing attack technique.
         """
         techniques: defaultdict[str, defaultdict[str, set[int]]] = defaultdict(
             lambda: defaultdict(set)
@@ -45,29 +45,21 @@ class MitreMatrixGenerator:  # pylint: disable=too-few-public-methods
         headers = TEMPLATE_HEADERS.copy()
         headers['Authorization'] = auth_bearer_token
 
-        data_linear = requests.get(
-            settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint, headers=headers, timeout=30
+        data = requests.get(
+            settings.CRCZP_CONFIG.training_mitre_techniques_endpoint, headers=headers, timeout=30
         ).json()
-        titles_linear = [
-            training_definition.get('title') + ' (' + str(training_definition.get('id')) + ')'
-            for training_definition in data_linear
-            if not played or training_definition.get('played')
-        ]
-
-        data_adaptive = requests.get(
-            settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint, headers=headers, timeout=30
-        ).json()
-        titles_adaptive = [
-            training_definition.get('title') + ' (' + str(training_definition.get('id')) + ')'
-            for training_definition in data_adaptive
-            if not played or training_definition.get('played')
-        ]
-
-        data = data_linear + data_adaptive
-        training_techniques = [
-            training_definition.get('mitre_techniques')
+        training_definitions = [
+            training_definition
             for training_definition in data
             if not played or training_definition.get('played')
+        ]
+        titles = [
+            f'{training_definition.get("title")} ({training_definition.get("id")})'
+            for training_definition in training_definitions
+        ]
+        training_techniques = [
+            training_definition.get('mitre_techniques')
+            for training_definition in training_definitions
         ]
         training_technique_dict = self._generate_comparison_techniques(training_techniques)
 
@@ -80,8 +72,7 @@ class MitreMatrixGenerator:  # pylint: disable=too-few-public-methods
         return template.render(  # type: ignore[no-any-return]
             tactics=tactics,
             techniques=techniques,
-            linear_game_names=titles_linear,
-            adaptive_game_names=titles_adaptive,
+            definition_names=titles,
             technique_dict=training_technique_dict,
             single_color=False,
         )

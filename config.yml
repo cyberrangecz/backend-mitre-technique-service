@@ -1,3 +1,7 @@
+# Required environment variables, supplied outside this file:
+#   DJANGO_SECRET_KEY - key for Django cryptographic signing; the service refuses to start
+#                       without it. Any high-entropy string.
+
 # Name of the microservice.
 #microservice_name: mitre-technique-service
 
@@ -19,11 +23,8 @@ application_configuration:
     # Use in case of self-signed certificates in related services.
     ssl_ca_certificate_verify: ""
 
-    # An address of java linear training endpoint
-    #java_linear_training_mitre_endpoint: "http://127.0.0.1:8083/training/api/v1/visualizations/training-definitions/mitre-techniques"
-
-    # An address of java adaptive training endpoint
-    #java_adaptive_training_mitre_endpoint: "http://127.0.0.1:8082/adaptive-training/api/v1/visualizations/training-definitions/mitre-techniques"
+    # An address of the training service endpoint serving MITRE techniques of training definitions
+    #training_mitre_techniques_endpoint: "http://127.0.0.1:8083/training/api/v1/training-definitions/played-mitre-techniques"
 
     # The location of jinja template and the locally stored MITRE data
     #file_storage_location: "crczp/mitre_matrix_visualizer_app/templates/"
