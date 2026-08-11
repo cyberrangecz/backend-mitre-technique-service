@@ -65,8 +65,8 @@ A reachable redis is required; on a cold cache the matrix is loaded from the pic
 ## Quality gate
 
 ```bash
-uvx tox            # pre-commit (ruff lint, ruff format, mypy), pylint, bandit, audit, pytest
-uvx tox -e pytest  # tests plus manage.py check
+uv run tox            # pre-commit (ruff lint, ruff format, mypy), pylint, bandit, audit, pytest
+uv run tox -e pytest  # tests plus manage.py check
 ```
 
 `pytest` runs against `crczp.mitre_technique_project.tests.settings`, which carries its own
