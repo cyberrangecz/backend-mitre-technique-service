@@ -31,12 +31,12 @@ class GetMatrixVisualisationView(APIView):  # type: ignore[misc]
         ],
         responses={200: None},  # Adjust if you have a specific response schema
         description=(
-            'Get matrix of MITRE ATT&CK tactics and techniques related to game definitions.'
+            'Get matrix of MITRE ATT&CK tactics and techniques related to training definitions.'
         ),
     )
     def get(self, request: Any, *_args: Any, **_kwargs: Any) -> HttpResponse:
         """
-        Get matrix of MITRE ATT&CK tactics and techniques related to game definitions.
+        Get matrix of MITRE ATT&CK tactics and techniques related to training definitions.
         """
         auth_bearer_token = None
         for header in request.META.items():

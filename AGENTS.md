@@ -13,7 +13,7 @@ For a high-level description, usage examples, and API overview, see the main pro
 
 This repository hosts a Django REST Framework service that provides MITRE ATT&CK matrix
 visualisation and technique lookup for the CyberRangeCZ Platform. It fetches live ATT&CK
-data via TAXII2/STIX2, generates an HTML matrix view tied to training game definitions,
+data via TAXII2/STIX2, generates an HTML matrix view tied to training definitions,
 and exposes a REST API documented via OpenAPI (drf-spectacular).
 
 Core tooling:
@@ -53,7 +53,6 @@ Agents **must not** push directly to `master`.
 │   │   └── tests/                    # App-level tests
 │   └── mitre_technique_project/      # Django project: settings, root URLs, WSGI
 │       └── tests/                    # Test-specific settings
-├── test_definition/                  # Sample training definition JSON data
 ├── AGENTS.md                         # This file
 ├── config.yml                        # Service runtime configuration
 ├── Dockerfile

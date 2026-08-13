@@ -75,23 +75,17 @@ class TestGenerator:  # pylint: disable=protected-access
 
         assert mitre_generator.generate_matrix('token', False) == 'r'
 
-        mock_request.assert_any_call(
-            settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint,
-            headers=self.headers,
-            timeout=30,
-        )
-        mock_request.assert_called_with(
-            settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint,
+        mock_request.assert_called_once_with(
+            settings.CRCZP_CONFIG.training_mitre_techniques_endpoint,
             headers=self.headers,
             timeout=30,
         )
 
-        mock_generate_comparison_techniques.assert_called_with([[1, 2], [], [3], [1, 2], [], [3]])
+        mock_generate_comparison_techniques.assert_called_with([[1, 2], [], [3]])
         mock_template.render.assert_called_with(
             tactics='a',
             techniques='b',
-            linear_game_names=['a1 (1)', 'b2 (2)', 'b3 (3)'],
-            adaptive_game_names=['a1 (1)', 'b2 (2)', 'b3 (3)'],
+            definition_names=['a1 (1)', 'b2 (2)', 'b3 (3)'],
             technique_dict='d',
             single_color=False,
         )
@@ -104,23 +98,17 @@ class TestGenerator:  # pylint: disable=protected-access
 
         assert mitre_generator.generate_matrix('token', True) == 'r'
 
-        mock_request.assert_any_call(
-            settings.CRCZP_CONFIG.java_linear_training_mitre_endpoint,
-            headers=self.headers,
-            timeout=30,
-        )
-        mock_request.assert_called_with(
-            settings.CRCZP_CONFIG.java_adaptive_training_mitre_endpoint,
+        mock_request.assert_called_once_with(
+            settings.CRCZP_CONFIG.training_mitre_techniques_endpoint,
             headers=self.headers,
             timeout=30,
         )
 
-        mock_generate_comparison_techniques.assert_called_with([[], [3], [], [3]])
+        mock_generate_comparison_techniques.assert_called_with([[], [3]])
         mock_template.render.assert_called_with(
             tactics='a',
             techniques='b',
-            linear_game_names=['b2 (2)', 'b3 (3)'],
-            adaptive_game_names=['b2 (2)', 'b3 (3)'],
+            definition_names=['b2 (2)', 'b3 (3)'],
             technique_dict='d',
             single_color=False,
         )

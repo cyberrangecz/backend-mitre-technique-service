@@ -7,12 +7,8 @@ from yamlize import Attribute, Object, YamlizingError
 from crczp.mitre_common_lib.exceptions import ImproperlyConfigured
 
 SSL_CA_CERTIFICATE_VERIFY = '/etc/ssl/certs'
-JAVA_LINEAR_TRAINING_MITRE_ENDPOINT = (
-    'http://127.0.0.1:8083/training/api/v1/visualizations/training-definitions/mitre-techniques'
-)
-JAVA_ADAPTIVE_TRAINING_MITRE_ENDPOINT = (
-    'http://127.0.0.1:8082/adaptive-training/api/v1/'
-    'visualizations/training-definitions/mitre-techniques'
+TRAINING_MITRE_TECHNIQUES_ENDPOINT = (
+    'http://127.0.0.1:8083/training/api/v1/training-definitions/played-mitre-techniques'
 )
 FILE_STORAGE_LOCATION = 'crczp/mitre_matrix_visualizer_app/templates/'
 REDIS_HOST = 'localhost'
@@ -32,11 +28,8 @@ class CrczpConfiguration(Object):  # type: ignore[misc]
     """Top-level CRCZP runtime configuration."""
 
     ssl_ca_certificate_verify = Attribute(type=str, default=SSL_CA_CERTIFICATE_VERIFY)
-    java_linear_training_mitre_endpoint = Attribute(
-        type=str, default=JAVA_LINEAR_TRAINING_MITRE_ENDPOINT
-    )
-    java_adaptive_training_mitre_endpoint = Attribute(
-        type=str, default=JAVA_ADAPTIVE_TRAINING_MITRE_ENDPOINT
+    training_mitre_techniques_endpoint = Attribute(
+        type=str, default=TRAINING_MITRE_TECHNIQUES_ENDPOINT
     )
     file_storage_location = Attribute(type=str, default=FILE_STORAGE_LOCATION)
     redis = Attribute(type=Redis, default=())
