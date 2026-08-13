@@ -110,6 +110,9 @@ jobs:
           version: "0.7.12"
 
       - name: Generate and Push Swagger Docs
+        env:
+          # throwaway value; schema generation doesn't sign anything durable
+          DJANGO_SECRET_KEY: ${{ github.run_id }}-${{ github.sha }}
         run: |
           mkdir output
           uv sync
