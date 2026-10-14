@@ -164,6 +164,8 @@ SPECTACULAR_SETTINGS = {
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': f'redis://{CRCZP_CONFIG.redis.host}:{CRCZP_CONFIG.redis.port}',
+        'LOCATION': (
+            f'redis://{CRCZP_CONFIG.redis.host}:{CRCZP_CONFIG.redis.port}/{CRCZP_CONFIG.redis.db}'
+        ),
     }
 }
