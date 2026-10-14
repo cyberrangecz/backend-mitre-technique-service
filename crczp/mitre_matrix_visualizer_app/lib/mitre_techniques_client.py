@@ -2,6 +2,7 @@
 
 import logging
 import pickle  # nosec B403 - data is written by this service from trusted MITRE sources
+from functools import cached_property
 from typing import Any
 
 from django.conf import settings
@@ -22,9 +23,10 @@ LOG = logging.getLogger(__name__)
 class MitreClient:
     """Retrieves MITRE ATT&CK tactics and techniques from the TAXII2 server or a local cache."""
 
-    def __init__(self) -> None:
-        collection = Collection(SOURCE_WEBSITE + MATRIX_ID)
-        self.source = TAXIICollectionSource(collection)
+    @cached_property
+    def source(self) -> TAXIICollectionSource:
+        """TAXII source of the matrix collection; connects to the server on first access."""
+        return TAXIICollectionSource(Collection(SOURCE_WEBSITE + MATRIX_ID))
 
     def _get_matrix_tactics(self) -> list[Any]:
         """

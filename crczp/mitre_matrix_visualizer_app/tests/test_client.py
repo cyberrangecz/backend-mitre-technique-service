@@ -96,3 +96,53 @@ class TestClient:  # pylint: disable=protected-access
         assert (
             mitre_client.update_matrix_data() == 'Tactics and techniques were updated successfully.'
         )
+
+
+class TestClientCaching:
+    """Tests that the TAXII server is contacted only when the matrix data is refreshed."""
+
+    @pytest.fixture  # type: ignore[untyped-decorator]
+    def taxii_source_class(self, mocker: Any) -> Any:
+        """Patch the TAXII source class so any connection attempt is observable."""
+        return mocker.patch(
+            'crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client.TAXIICollectionSource'
+        )
+
+    def test_construction_does_not_contact_taxii(self, taxii_source_class: Any) -> None:
+        """Test that creating a client does not open the TAXII source."""
+        MitreClient()
+
+        taxii_source_class.assert_not_called()
+
+    def test_cached_read_does_not_contact_taxii(self, mocker: Any, taxii_source_class: Any) -> None:
+        """Test that serving cached data never opens the TAXII source."""
+        cached_values = {
+            'mitre_tactics': ['tactic'],
+            'mitre_techniques': ['technique'],
+            'technique_index': ['index'],
+        }
+        mocker.patch(
+            'crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client.cache.get',
+            side_effect=lambda key, default=None: cached_values.get(key, default),
+        )
+
+        result = MitreClient().get_tactics_techniques()
+
+        assert result == (['tactic'], ['technique'], ['index'])
+        taxii_source_class.assert_not_called()
+
+    def test_failed_taxii_connection_falls_back_to_backup(
+        self, mocker: Any, taxii_source_class: Any
+    ) -> None:
+        """Test that a TAXII connection error during a refresh uses the stored backup data."""
+        taxii_source_class.side_effect = RuntimeError('429 Too Many Requests')
+        mocker.patch(
+            'crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client.pickle.load',
+            return_value=(['tactic'], ['technique'], ['index']),
+        )
+        mocker.patch('builtins.open', mocker.mock_open())
+        mocker.patch('crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client.cache.set')
+
+        message = MitreClient().update_matrix_data()
+
+        assert message.startswith('The tactics and techniques update failed')
