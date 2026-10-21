@@ -1,5 +1,6 @@
 """CRCZP application configuration loaded from a YAML file via yamlize."""
 
+from pathlib import Path
 from typing import Any
 
 from yamlize import Attribute, Object, YamlizingError
@@ -10,7 +11,9 @@ SSL_CA_CERTIFICATE_VERIFY = '/etc/ssl/certs'
 TRAINING_MITRE_TECHNIQUES_ENDPOINT = (
     'http://127.0.0.1:8083/training/api/v1/training-definitions/played-mitre-techniques'
 )
-FILE_STORAGE_LOCATION = 'crczp/mitre_matrix_visualizer_app/templates/'
+FILE_STORAGE_LOCATION = (
+    str(Path(__file__).resolve().parent.parent / 'mitre_matrix_visualizer_app' / 'templates') + '/'
+)
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 REDIS_DB = 1

@@ -122,8 +122,8 @@ class TestClientCaching:
             'technique_index': ['index'],
         }
         mocker.patch(
-            'crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client.cache.get',
-            side_effect=lambda key, default=None: cached_values.get(key, default),
+            'crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client.cache.get_many',
+            return_value=cached_values,
         )
 
         result = MitreClient().get_tactics_techniques()
