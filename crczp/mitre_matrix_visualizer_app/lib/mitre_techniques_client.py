@@ -2,9 +2,10 @@
 
 import logging
 import pickle  # nosec B403 - data is written by this service from trusted MITRE sources
+from functools import cached_property
+from pathlib import Path
 from typing import Any
 
-from django.conf import settings
 from django.core.cache import cache
 from stix2 import Filter, TAXIICollectionSource
 from taxii2client.v21 import Collection
@@ -15,6 +16,9 @@ SOURCE_WEBSITE = 'https://attack-taxii.mitre.org/api/v21/collections/'
 MATRIX_ID = 'x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019'
 MATRIX_NAME = 'Enterprise ATT&CK'
 MITRE_CACHE_TIMEOUT = None  # No timeout - cache is updated manually
+CACHE_KEYS = ('mitre_tactics', 'mitre_techniques', 'technique_index')
+BACKUP_PATH = Path(__file__).resolve().parent.parent / 'templates' / 'mitre_attack_backup_data'
+MatrixData = tuple[list[Any], list[Any], list[Any]]
 
 LOG = logging.getLogger(__name__)
 
@@ -22,9 +26,10 @@ LOG = logging.getLogger(__name__)
 class MitreClient:
     """Retrieves MITRE ATT&CK tactics and techniques from the TAXII2 server or a local cache."""
 
-    def __init__(self) -> None:
-        collection = Collection(SOURCE_WEBSITE + MATRIX_ID)
-        self.source = TAXIICollectionSource(collection)
+    @cached_property
+    def source(self) -> TAXIICollectionSource:
+        """TAXII source of the matrix collection; connects to the server on first access."""
+        return TAXIICollectionSource(Collection(SOURCE_WEBSITE + MATRIX_ID))
 
     def _get_matrix_tactics(self) -> list[Any]:
         """
@@ -91,56 +96,61 @@ class MitreClient:
             all_techniques.append(tactic_techniques)
         return all_techniques, technique_index
 
-    def get_tactics_techniques(self) -> tuple[list[Any], list[Any], list[Any]]:
-        """
-        This method gets tactics, techniques and technique_index from cache.
-        If the cache has not been updated yet, the data is read from the local file.
-        """
-        print('Gathering matrix content:')
-        tactics = cache.get('mitre_tactics', None)
-        techniques = cache.get('mitre_techniques', None)
-        technique_index = cache.get('technique_index', None)
+    @staticmethod
+    def _read_backup() -> MatrixData:
+        """Load the matrix data bundled with the service."""
+        with open(BACKUP_PATH, 'rb') as backup:
+            return pickle.load(backup)  # type: ignore[no-any-return]  # nosec B301
 
-        if not tactics:
-            with open(
-                settings.CRCZP_CONFIG.file_storage_location + 'mitre_attack_backup_data',
-                'rb',
-            ) as backup:
-                (tactics, techniques, technique_index) = pickle.load(backup)  # nosec B301
-            cache.set('mitre_tactics', tactics, MITRE_CACHE_TIMEOUT)
-            cache.set('mitre_techniques', techniques, MITRE_CACHE_TIMEOUT)
-            cache.set('technique_index', technique_index, MITRE_CACHE_TIMEOUT)
+    @staticmethod
+    def _read_cache() -> MatrixData | None:
+        """Return the cached matrix data, or None when it is incomplete or the cache fails."""
+        try:
+            cached = cache.get_many(CACHE_KEYS)
+        except Exception as exc:  # pylint: disable=broad-exception-caught
+            LOG.warning('Matrix cache read failed: %s', exc)
+            return None
+        values = [cached.get(key) for key in CACHE_KEYS]
+        if not all(values):
+            return None
+        return values[0], values[1], values[2]
 
-        return tactics, techniques, technique_index
+    @staticmethod
+    def _write_cache(data: MatrixData) -> None:
+        """Store the matrix data in the cache; a failing cache is logged and ignored."""
+        try:
+            cache.set_many(dict(zip(CACHE_KEYS, data, strict=True)), MITRE_CACHE_TIMEOUT)
+        except Exception as exc:  # pylint: disable=broad-exception-caught
+            LOG.warning('Matrix cache write failed: %s', exc)
+
+    def get_tactics_techniques(self) -> MatrixData:
+        """
+        Return tactics, techniques and technique index from the cache. When the cache is empty
+        or unavailable, the bundled data is returned and stored in the cache.
+        """
+        data = self._read_cache()
+        if data is None:
+            data = self._read_backup()
+            self._write_cache(data)
+        return data
 
     def update_matrix_data(self) -> str:
         """
-        Method updates the tactics and techniques in cache. It attempts to retrieve the data
-        from the official taxi server. If unsuccessful, use locally stored file.
-        :return: Message stating whether the taxi server or local file was used.
+        Replace the cached data with the data of the official TAXII server. When the server
+        cannot be used, the cached data stays in place, or is filled from the bundled data
+        when the cache holds none.
+        :return: Message stating whether the TAXII server data was stored.
         """
         try:
             print('Gathering matrix content:')
             tactics = self._get_matrix_tactics()
             (techniques, technique_index) = self._get_matrix_techniques(tactics)
-            message = 'Tactics and techniques were updated successfully.'
-            # The following code updates the locally stored file with the mitre data.
-            # Currently, it is not used for anything, but it may be useful in the future
-            # to update the file and replace it in the repository.
-            # with open(settings.CRCZP_CONFIG.file_storage_location+"mitre_attack_backup_data",
-            #           'wb') as backup:
-            #     pickle.dump((tactics, techniques, technique_index), backup)
         except Exception as exc:  # pylint: disable=broad-exception-caught
             LOG.error('Matrix update failed: %s', exc, exc_info=True)
-            message = (
+            self.get_tactics_techniques()
+            return (
                 'The tactics and techniques update failed. '
-                'Falling back on locally stored MITRE data.'
+                'Keeping the cached or locally stored MITRE data.'
             )
-            with open(
-                settings.CRCZP_CONFIG.file_storage_location + 'mitre_attack_backup_data', 'rb'
-            ) as backup:
-                (tactics, techniques, technique_index) = pickle.load(backup)  # nosec B301
-        cache.set('mitre_tactics', tactics, MITRE_CACHE_TIMEOUT)
-        cache.set('mitre_techniques', techniques, MITRE_CACHE_TIMEOUT)
-        cache.set('technique_index', technique_index, MITRE_CACHE_TIMEOUT)
-        return message
+        self._write_cache((tactics, techniques, technique_index))
+        return 'Tactics and techniques were updated successfully.'

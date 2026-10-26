@@ -1,5 +1,6 @@
 """Generates the MITRE ATT&CK HTML matrix from live training data and a Jinja2 template."""
 
+import re
 from collections import defaultdict
 from typing import Any
 
@@ -10,6 +11,7 @@ from jinja2 import Template
 from crczp.mitre_matrix_visualizer_app.lib.mitre_techniques_client import MitreClient
 
 TEMPLATE_HEADERS = {'accept': 'application/json', 'Content-Type': 'application/json'}
+TECHNIQUE_KEY_PATTERN = re.compile(r'TA\d{4}\.T\d{4}(\.\d{3})?')
 
 
 class MitreMatrixGenerator:  # pylint: disable=too-few-public-methods
@@ -30,8 +32,8 @@ class MitreMatrixGenerator:  # pylint: disable=too-few-public-methods
 
         for level_index, level_techniques in enumerate(training_techniques):
             for technique in level_techniques:
-                if len(technique.split('.')) > 2:
-                    technique = technique.split('.')[0] + '.' + technique.split('.')[1]
+                if not TECHNIQUE_KEY_PATTERN.fullmatch(technique):
+                    continue
                 parts = technique.split('.')
                 techniques[parts[0]][parts[1]].add(level_index + 1)
         return techniques

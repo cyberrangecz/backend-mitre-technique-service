@@ -31,13 +31,18 @@ class TestGenerator:  # pylint: disable=protected-access
         self, mitre_generator: MitreMatrixGenerator
     ) -> None:
         """Test that _generate_comparison_techniques builds the correct nested defaultdict."""
-        techniques = [['1.1', '1.2.1'], [], ['3.1']]
+        techniques = [
+            ['TA0001.T1059', 'TA0001.T1059.001', 'TA0001.T1566'],
+            ['1.1', 'T1059'],
+            [],
+            ['TA0002.T1003'],
+        ]
         result_techniques: defaultdict[str, defaultdict[str, set[int]]] = defaultdict(
             lambda: defaultdict(set)
         )
-        result_techniques['1']['1'].add(1)
-        result_techniques['1']['2'].add(1)
-        result_techniques['3']['1'].add(3)
+        result_techniques['TA0001']['T1059'].add(1)
+        result_techniques['TA0001']['T1566'].add(1)
+        result_techniques['TA0002']['T1003'].add(4)
         assert mitre_generator._generate_comparison_techniques(techniques) == result_techniques
 
     @pytest.fixture  # type: ignore[untyped-decorator]
