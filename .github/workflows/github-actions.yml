@@ -71,6 +71,9 @@ jobs:
     needs: [get_current_version, codeQuality]
     env:
       VERSION: ${{ needs.get_current_version.outputs.version }}
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+      digest: ${{ steps.push.outputs.digest }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -85,15 +88,41 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # master builds the release tag, every other branch the -dev tag
+      - name: Set image tag
+        id: tag
+        run: |
+          if [ "$GITHUB_REF" = refs/heads/master ]; then tag="$VERSION"; else tag="${VERSION}-dev"; fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
       - name: Build and push Docker image
+        id: push
         env:
-          TAG: ${{ github.ref == 'refs/heads/master' && format('{0}', env.VERSION ) || format('{0}-dev', env.VERSION) }}
+          TAG: ${{ steps.tag.outputs.tag }}
         uses: docker/build-push-action@v6
         with:
           context: .  # Path to the Dockerfile
           file: ./Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}/mitre-technique-service:${{ env.TAG }}
+
+  # Manual deploy-to-stage button: waits for a reviewer to approve the stage environment,
+  # then sends this build to tf-crczp-kubernetes. The App credentials are the stage
+  # environment's DEPLOY_APP_CLIENT_ID variable and DEPLOY_APP_PRIVATE_KEY secret.
+  deploy_stage:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions: {}
+    environment: stage
+    steps:
+      - name: Deploy to stage
+        uses: cyberrangecz/actions-templates/.github/actions/deploy-dispatch@master
+        with:
+          component: mitre
+          tag: ${{ needs.build.outputs.tag }}
+          digest: ${{ needs.build.outputs.digest }}
+          client-id: ${{ vars.DEPLOY_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DEPLOY_APP_PRIVATE_KEY }}
 
   generate_docs:
     if: github.ref == 'refs/heads/master'
